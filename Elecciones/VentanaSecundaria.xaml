@@ -1,0 +1,91 @@
+﻿<Window x:Class="Elecciones.VentanaSecundaria"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Elecciones"
+        mc:Ignorable="d"
+        Title="VentanaSecundaria" Height="450" Width="800">
+    <!-- Aqui ponemos toda la funcionalidad, y asi es como se verá en la aplicacion la ventana secundaria -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Margin="5" Click="BotonCrearEleccion_Click">Crear Elección</Button>
+            <Button Grid.Column="1" Margin="5" >Eliminar Elección</Button>
+            <Button Grid.Column="2" Margin="5" >Editar Elección</Button>
+
+        </Grid>
+        
+        
+        
+        
+        <DataGrid Name="ProcesosElectorales" Margin="20" Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="PROCESO ELECTORAL">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="FECHA">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter  Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="NÚMERO DE ESCAÑOS">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter  Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="MAYORÍA ABSOLUTA">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter  Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>            
+        </DataGrid>
+
+
+        <DataGrid Name="PartidosPolíticos" Margin="20" Grid.Row="2">
+            <DataGrid.Columns>
+                
+                <DataGridTextColumn Header="PARTIDO" Width="Auto">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter  Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="ESCAÑOS">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter  Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+               
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+
+</Window>

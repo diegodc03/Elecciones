@@ -1,0 +1,52 @@
+﻿<Window x:Class="Elecciones.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Elecciones"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        SizeChanged="Window_SizeChanged"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Menu Grid.Row="0" Grid.ColumnSpan="4">
+
+            <MenuItem Header="_Opciones" >
+                <MenuItem Header="_Gráfica Unitaria"
+                          Click="GraficaSoloUnaEleccion_Click"
+                          />
+                <MenuItem Header="_Grafica Comparatoria"
+                          Click="graficaComparatoriaEntreElecciones_Click"
+                          />
+                <MenuItem Header="_Gráfica Pactómetro"
+                          />
+                <MenuItem Header="Configuración"
+                          Click="MenuConfig_Click"
+                          />
+
+            </MenuItem>
+
+
+        </Menu>
+        <!--Aqui es donde pondre la grafica, en la parte gris-->
+        <Canvas Name="canvasGrafica" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="2" Margin="30">
+            
+            
+            
+            
+        </Canvas>
+    </Grid>
+</Window>
