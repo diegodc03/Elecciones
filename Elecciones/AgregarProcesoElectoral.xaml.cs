@@ -19,47 +19,64 @@ namespace Elecciones
     /// </summary>
     public partial class AgregarProcesoElectoral : Window
     {
+        List<Partido> partidos = new List<Partido>();
+        List<String> partidosPers = new List<string>();
+        PartidosPersistentes partidosPersistentes = new PartidosPersistentes();
+        
+
         public AgregarProcesoElectoral()
         {
             InitializeComponent();
+            
+            partidosPers = partidosPersistentes.getPartidos();
+            PartidoComboBox.ItemsSource = partidosPers;
+
         }
 
 
         private void AniadirPartidoPolitico_Click(object sender, RoutedEventArgs e)
         {
-            String nombrePartido = PartidoPolitico.Text;
+            String nombrePartido = PartidoComboBox.Text;
             String numEscanios = NumEscaniosPartido.Text;
+            String colorPartido = ColorPartido.Text;
+            
             int numScanios;
             
+            
+
             //Comprobamos si usuario ha introducido los dos valores pedidos
-            if(string.IsNullOrWhiteSpace(nombrePartido) || string.IsNullOrWhiteSpace(numEscanios))
+            if(string.IsNullOrWhiteSpace(nombrePartido) || string.IsNullOrWhiteSpace(numEscanios ) || string.IsNullOrWhiteSpace(colorPartido))
             {
-                String mensajePorPantalla = "No ha introducido uno de los dos campos";
+                String mensajePorPantalla = "No ha introducido alguno de los tres campos";
                 MessageBox.Show(mensajePorPantalla);
             }
             else
             {
                 //Valores introducidos, comprobamos que el segundo valor es un Int32
-                try
-                {
+                if(int.TryParse(numEscanios,out numScanios)){
                     numScanios = Int32.Parse(numEscanios);
+
+                    //Se crea Instancia y se introduce en ListaDePartidos
+                    Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
+                    partidos.Add(partidoPolitico);
+
+                    //Añadir a ListaPartidosPersistentes
+                    partidosPersistentes.AgregarPartido(partidoPolitico.nombrePartido);
+                
+                    //Actualizar ComboBox
+                    PartidoComboBox.ItemsSource = partidosPersistentes.getPartidos();
+
                 }
-                catch (FormatException)
+                else
                 {
                     //Sacamos error por pantalla
                     String mensajePorPantalla = "Introduzca el valor de los escaños otra vez, valor incorrecto";
                     MessageBox.Show(mensajePorPantalla);
                 }
-
-                //Si salimos del tryCatch implica que tenemos que podemos añadir a la lista el partido
-
-
+                
             }
             
-            
 
-            
-        
         }
 
         private void AniadirProcesoElectoral_Click(object sender, RoutedEventArgs e)
@@ -69,5 +86,9 @@ namespace Elecciones
 
         }
 
+        private void nombreEleccion_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }
