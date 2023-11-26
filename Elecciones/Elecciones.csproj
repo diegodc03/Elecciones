@@ -58,6 +58,7 @@
     <Compile Include="AgregarProcesoElectoral.xaml.cs">
       <DependentUpon>AgregarProcesoElectoral.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PartidosPersistentes.cs" />
     <Compile Include="VentanaSecundaria.xaml.cs">
       <DependentUpon>VentanaSecundaria.xaml</DependentUpon>
     </Compile>

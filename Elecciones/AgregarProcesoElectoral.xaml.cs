@@ -54,17 +54,39 @@ namespace Elecciones
             {
                 //Valores introducidos, comprobamos que el segundo valor es un Int32
                 if(int.TryParse(numEscanios,out numScanios)){
-                    numScanios = Int32.Parse(numEscanios);
+                    
+                    //Devuelve o una instancia de Partidos o null
+                    if(partidos.Find(x => x.nombrePartido.Contains(nombrePartido))== null){
+                        
+                        numScanios = Int32.Parse(numEscanios);
+                        nombrePartido = nombrePartido.ToUpper();
+                        int indiceFila = DataGridPartidos.SelectedIndex;
 
-                    //Se crea Instancia y se introduce en ListaDePartidos
-                    Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
-                    partidos.Add(partidoPolitico);
+                        //Se crea Instancia y se introduce en ListaDePartidos
+                        Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
+                        partidos.Add(partidoPolitico);
 
-                    //Añadir a ListaPartidosPersistentes
-                    partidosPersistentes.AgregarPartido(partidoPolitico.nombrePartido);
-                
-                    //Actualizar ComboBox
-                    PartidoComboBox.ItemsSource = partidosPersistentes.getPartidos();
+
+
+                        //Añadir a ListaPartidosPersistentes si no existe todavia
+                        if (!partidosPers.Contains(nombrePartido))
+                        {
+                            partidosPersistentes.AgregarPartido(partidoPolitico.nombrePartido);
+
+                            //Actualizar ComboBox
+                            partidosPers = partidosPersistentes.getPartidos();
+                            PartidoComboBox.ItemsSource = null;
+                            PartidoComboBox.ItemsSource = partidosPers;
+                        }
+
+
+                        //Añadimos al dataGrid
+                        var nuevoPartidoData = new { PARTIDO = nombrePartido, ESCAÑOS = numScanios };
+                        //DataGridPartidos.ItemsSource = null;
+                        //DataGridPartidos.ItemsSource = partidos;
+                        DataGridPartidos.Items.Add(nuevoPartidoData);
+
+                    }
 
                 }
                 else
@@ -78,6 +100,9 @@ namespace Elecciones
             
 
         }
+
+
+
 
         private void AniadirProcesoElectoral_Click(object sender, RoutedEventArgs e)
         {

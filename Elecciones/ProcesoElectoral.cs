@@ -45,10 +45,9 @@ namespace Elecciones
             this.numProceso = 0;
         }
 
-        
 
 
     }
 
-
+    
 }
