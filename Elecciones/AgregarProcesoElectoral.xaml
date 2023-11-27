@@ -8,8 +8,8 @@
         Title="AgregarProcesoElectoral" Height="450" Width="800">
 
 
-  
-    
+
+
 
     <TabControl TabStripPlacement="Top">
         <TabItem Header="Proceso Electotal" Height="Auto" Width="Auto">
@@ -38,21 +38,21 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="1"  Margin="10" VerticalAlignment="Center" >
-                    <DatePicker x:Name="FechaElección" Margin="15" Text="Selecciona una Fecha" Width="200" HorizontalAlignment="Left"/>
+                    <DatePicker x:Name="FechaEleccion" Margin="15" Text="Selecciona una Fecha" Width="200" HorizontalAlignment="Left"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" >
                     <TextBlock Grid.Row="0" Text="Numero de Escaños Total:" Margin="10"/>
-                    <TextBox x:Name="NumEscañosTotal" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200" HorizontalAlignment="Left"/>
+                    <TextBox x:Name="NumEscaniosTotal" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200" HorizontalAlignment="Left" TextChanged="NumEscaniosTotal_TextChanged"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="0" Margin="10" >
                     <TextBlock Grid.Row="0" Text="Mayoría Absoluta:" Margin="10"/>
-                    <TextBox x:Name="MayoriaAbsoluta" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200"  HorizontalAlignment="Left"/>
+                    <TextBox x:Name="MayoriaAbsoluta" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200"  HorizontalAlignment="Left" TextChanged="MayoriaAbsoluta_TextChanged"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="10">
-                    <Button Margin="10" Width="150" Height="50" Click="AniadirPartidoPolitico_Click" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                    <Button Margin="10" Width="150" Height="50" Click="AniadirProcesoElectoral_Click" HorizontalAlignment="Center" VerticalAlignment="Center" >
                         <Label >Añadir Partido Político</Label>
                     </Button>
                 </StackPanel>
@@ -81,12 +81,12 @@
 
 
                     <StackPanel Margin="10,10,10,10" Grid.ColumnSpan="3" >
-                    <TextBlock Grid.Row="0" Text="Introduce un Partido Político" Margin="10"/>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" >
-                        <ComboBox x:Name="PartidoComboBox" DisplayMemberPath="" IsEditable="True" Width="250" HorizontalAlignment="Left" Margin="15 00 00 00"/>    
-                    </ScrollViewer>
-                    
-                </StackPanel>
+                        <TextBlock Grid.Row="0" Text="Introduce un Partido Político" Margin="10"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                            <ComboBox x:Name="PartidoComboBox" DisplayMemberPath="" IsEditable="True" Width="250" HorizontalAlignment="Left" Margin="15 00 00 00"/>
+                        </ScrollViewer>
+
+                    </StackPanel>
 
                     <StackPanel Margin="10,10,10,10" Grid.ColumnSpan="3" >
                         <TextBlock Grid.Row="0" Text="Introduce Numero de Escaños del Partido:" Margin="10"/>
@@ -103,36 +103,27 @@
                             <Label >Añadir Partido Político</Label>
                         </Button>
                     </StackPanel>
-
                 </StackPanel>
-
+                
                 <DataGrid Name="DataGridPartidos" Margin="20" Grid.Column="1">
                     <DataGrid.Columns>
-
-                        <DataGridTextColumn Header="PARTIDO" Width="Auto">
+                        <DataGridTextColumn Header="PARTIDO" Width="Auto" Binding="{Binding PARTIDO}">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter  Property="HorizontalContentAlignment" Value="Center" />
                                 </Style>
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="ESCAÑOS">
+                        <DataGridTextColumn Header="ESCAÑOS" Width="Auto"  Binding="{Binding ESCAÑOS}">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter  Property="HorizontalContentAlignment" Value="Center"/>
                                 </Style>
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
-
                     </DataGrid.Columns>
                 </DataGrid>
-
-
             </Grid>
         </TabItem>
-
     </TabControl>
-
-
-
 </Window>

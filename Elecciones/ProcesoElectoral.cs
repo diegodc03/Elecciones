@@ -27,9 +27,10 @@ namespace Elecciones
             Partidos = new List<Partido>();
 
         }
+        
     }
 
-
+    
     public class Partido
     {
         public String nombrePartido { get; set; }
