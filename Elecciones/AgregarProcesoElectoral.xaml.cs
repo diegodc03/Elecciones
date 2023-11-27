@@ -64,39 +64,52 @@ namespace Elecciones
                     //Valores introducidos, comprobamos que el segundo valor es un Int32
                     if (int.TryParse(numEscanios, out numScanios))
                     {
-
-                        //Devuelve o una instancia de Partidos o null
-                        if (partidos.Find(x => x.nombrePartido.Contains(nombrePartido)) == null)
+                        if(numScanios > 0)
                         {
-
-                            numScanios = Int32.Parse(numEscanios);
-                            nombrePartido = nombrePartido.ToUpper();
-                            int indiceFila = DataGridPartidos.SelectedIndex;
-
-                            //Se crea Instancia y se introduce en ListaDePartidos
-                            Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
-                            partidos.Add(partidoPolitico);
-
-
-
-                            //Añadir a ListaPartidosPersistentes si no existe todavia
-                            if (!partidosPers.Contains(nombrePartido))
+                            //Devuelve o una instancia de Partidos o null
+                            if (partidos.Find(x => x.nombrePartido.Contains(nombrePartido)) == null)
                             {
-                                partidosPersistentes.AgregarPartido(partidoPolitico.nombrePartido);
 
-                                //Actualizar ComboBox
-                                partidosPers = partidosPersistentes.getPartidos();
-                                PartidoComboBox.ItemsSource = null;
-                                PartidoComboBox.ItemsSource = partidosPers;
+                                numScanios = Int32.Parse(numEscanios);
+                                nombrePartido = nombrePartido.ToUpper();
+                                int indiceFila = DataGridPartidos.SelectedIndex;
+
+                                //Se crea Instancia y se introduce en ListaDePartidos
+                                Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
+                                partidos.Add(partidoPolitico);
+
+
+
+                                //Añadir a ListaPartidosPersistentes si no existe todavia
+                                if (!partidosPers.Contains(nombrePartido))
+                                {
+                                    partidosPersistentes.AgregarPartido(partidoPolitico.nombrePartido);
+
+                                    //Actualizar ComboBox
+                                    partidosPers = partidosPersistentes.getPartidos();
+                                    PartidoComboBox.ItemsSource = null;
+                                    PartidoComboBox.ItemsSource = partidosPers;
+                                }
+
+
+                                //Añadimos al dataGrid //AQUI PROBLEMAS
+                                var nuevoPartidoData = new { PARTIDO = nombrePartido, ESCAÑOS = numScanios };
+                                //DataGridPartidos.ItemsSource = nuevoPartidoData;
+                                DataGridPartidos.Items.Add(nuevoPartidoData);
+
                             }
-
-
-                            //Añadimos al dataGrid //AQUI PROBLEMAS
-                            var nuevoPartidoData = new { PARTIDO = nombrePartido, ESCAÑOS = numScanios };
-                            //DataGridPartidos.ItemsSource = nuevoPartidoData;
-                            DataGridPartidos.Items.Add(nuevoPartidoData);
-
+                            else
+                            {
+                                String mensajePorPantalla = "Ya existe ese partido político";
+                                MessageBox.Show(mensajePorPantalla);
+                            }
                         }
+                        else
+                        {
+                            String mensajePorPantalla = "Ha introducido un Valor 0 o negativo";
+                            MessageBox.Show(mensajePorPantalla);
+                        }
+                        
 
                     }
                     else
@@ -148,32 +161,39 @@ namespace Elecciones
 
         }
 
-
+    //Dos metodos para conseguir que si cambia un elemento se cambie el otro, asi conseguir que la mayoría absoluta y escaños total no puedan ser erroneos
         private void NumEscaniosTotal_TextChanged(object sender, TextChangedEventArgs e)
         {
             string numero = NumEscaniosTotal.Text;
             int numeroInt;
             int numeroMayoriaAbsoluta;
+            
+            if(NumEscaniosTotal.Text == "")
+            {
+                MayoriaAbsoluta.Text = "";
+            }
 
             if (int.TryParse(numero, out numeroInt))
             {
-                numeroMayoriaAbsoluta = numeroInt / 2 + 1;
-                MayoriaAbsoluta.Text = numeroMayoriaAbsoluta.ToString();
+                if(numeroInt > 0)
+                {
+                    numeroMayoriaAbsoluta = numeroInt / 2 + 1;
+                    MayoriaAbsoluta.Text = numeroMayoriaAbsoluta.ToString();
+                }
+                else
+                {
+                    String mensajePorPantalla = "Valores Negativos o 0, vuelve a introducirlos";
+                    MessageBox.Show(mensajePorPantalla);
+                    MayoriaAbsoluta.Text = "";
+                    NumEscaniosTotal.Text = "";
+                }
+
+               
             }
 
         }
-
-        private void MayoriaAbsoluta_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string numero = MayoriaAbsoluta.Text;
-            int numeroInt;
-            int numeroTotal;
-
-            if (int.TryParse(numero, out numeroInt))
-            {
-                numeroTotal = numeroInt * 2 - 1;
-                NumEscaniosTotal.Text = numeroTotal.ToString();
-            }
-        }
+        
+        
+        
     }
 }
