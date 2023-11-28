@@ -34,7 +34,7 @@
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="10" >
                     <TextBlock Grid.Row="0" Text="Nombre de la Elección:" Margin="10"/>
-                    <TextBox x:Name="nombreEleccion" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200" HorizontalAlignment="Left" TextChanged="nombreEleccion_TextChanged"/>
+                    <TextBox x:Name="nombreEleccion" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200" HorizontalAlignment="Left" />
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="1"  Margin="10" VerticalAlignment="Center" >
@@ -95,8 +95,9 @@
 
                     <StackPanel Margin="10,10,10,10" Grid.ColumnSpan="3" >
                         <TextBlock Grid.Row="0" Text="Introduce Color :" Margin="10"/>
-                        <TextBox x:Name="ColorPartido" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="250" HorizontalAlignment="Left"/>
-                        
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                            <ComboBox x:Name="ColoresComboBox" DisplayMemberPath="" IsEditable="True" Width="250" HorizontalAlignment="Left" Margin="15 00 00 00" IsReadOnly="True" Text="Introduce un color..."/>
+                        </ScrollViewer>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Margin="10,10,10,10" Grid.ColumnSpan="3">
@@ -108,21 +109,38 @@
                 
                 <DataGrid Name="DataGridPartidos" Margin="20" Grid.Column="1">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="PARTIDO" Width="Auto" Binding="{Binding PARTIDO}">
+                        <DataGridTextColumn Header="PARTIDO" Width="100" Binding="{Binding nombrePartido}">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter  Property="HorizontalContentAlignment" Value="Center" />
                                 </Style>
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="ESCAÑOS" Width="Auto"  Binding="{Binding ESCAÑOS}">
+                        
+                        <DataGridTextColumn Header="ESCAÑOS" Width="100"  Binding="{Binding scanios}">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter  Property="HorizontalContentAlignment" Value="Center"/>
                                 </Style>
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="COLOR" Width="100"  Binding="{Binding color}">
+                            <DataGridTextColumn.HeaderStyle >
+                                <Style TargetType="DataGridColumnHeader" >
+                                    <Setter  Property="HorizontalContentAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
+
+                        
+                        
                     </DataGrid.Columns>
+
+                    
+
+
+
                 </DataGrid>
             </Grid>
         </TabItem>

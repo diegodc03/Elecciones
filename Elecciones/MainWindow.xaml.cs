@@ -33,8 +33,8 @@ namespace Elecciones
         public MainWindow()
         {
             InitializeComponent();
-
-            proceso1 = new ProcesoElectoral("Elecciones 2022", "01/01/2022", 410);
+            /*
+            //proceso1 = new ProcesoElectoral("Elecciones 2022", "01/01/2022", 410);
 
             proceso1.Partidos.Add(new Partido("PP", 150, "Blue"));
             proceso1.Partidos.Add(new Partido("PSOE", 120, "Red"));
@@ -73,7 +73,7 @@ namespace Elecciones
             //canvasGrafica.Height = yrealmax - yrealmin;
 
 
-
+            */
 
         }
 

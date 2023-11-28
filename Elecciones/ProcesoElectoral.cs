@@ -10,21 +10,22 @@ namespace Elecciones
     public class ProcesoElectoral
     {
         public String nombreProcesoElectoral { get; set; }
-        public String fechaProcesoElectoral { get; set; }
+        public DateTime fechaProcesoElectoral { get; set; }
         public double numeroDeEscanios { get; set; }
         public double mayoriaAbsoluta { get; set; }
         
         public List<Partido> Partidos { get; set; } // Lista de partidos asociados al proceso
 
-        public ProcesoElectoral(String nombreEleccion, String fechaProceso, int numEscanios)
+        public ProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, List<Partido> partidos)
         {
             this.nombreProcesoElectoral = nombreEleccion;
             this.fechaProcesoElectoral = fechaProceso;
             this.numeroDeEscanios = numEscanios;
-            this.mayoriaAbsoluta = (numEscanios / 2) + 1;
+            this.mayoriaAbsoluta = mayoria;
            
             //Se crea una lista nueva de partidos para que se vayan introduciendo
             Partidos = new List<Partido>();
+            this.Partidos = partidos.ToList();
 
         }
         
@@ -43,10 +44,25 @@ namespace Elecciones
             this.nombrePartido = part;
             this.scanios = scani;
             this.color = colorr;
-            this.numProceso = 0;
         }
 
 
+
+    }
+
+
+    public static class ProcesoElectoralFactory
+    {
+        public static ProcesoElectoral CrearProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, List<Partido> partidos)
+        {
+            return new ProcesoElectoral(nombreEleccion, fechaProceso, numEscanios, mayoria, partidos);
+        }
+
+
+        public static Partido CrearPartido(String nombreProceso, int numEscanios, string color)
+        {
+            return new Partido(nombreProceso, numEscanios, color);
+        }
 
     }
 

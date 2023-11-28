@@ -162,10 +162,7 @@ namespace Elecciones
         }
 
 
-        private void ordenarLista()
-        {
-
-        }
+        
 
 
 

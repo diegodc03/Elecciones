@@ -9,7 +9,11 @@ using System.Xml.Serialization;
 
 namespace Elecciones
 {
-    internal class PartidosPersistentes
+
+    
+
+
+    public class PartidosPersistentes
     {
 
         private List<String> listaPartidosPoliticos = new List<String>();
@@ -61,4 +65,32 @@ namespace Elecciones
 
 
     }
+
+    public class LecturaDeFicheroTxt
+    {
+
+        public List<string> leerFichero()
+        {
+            string nombreFichero = "coloresTexto.txt";
+            List<string> lineas = new List<string>();
+
+            if (File.Exists(nombreFichero))
+            {
+                using(StreamReader sr = new StreamReader(nombreFichero))
+                {
+                    string linea;
+                    while((linea = sr.ReadLine()) != null)
+                    {
+                        lineas.Add(linea);
+                    }
+                }
+            }
+
+
+            return lineas;
+        }
+
+    }
+
+
 }

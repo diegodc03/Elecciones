@@ -20,10 +20,13 @@ namespace Elecciones
     /// </summary>
     public partial class AgregarProcesoElectoral : Window
     {
+        
         List<Partido> partidos = new List<Partido>();
         List<String> partidosPers = new List<string>();
+        List<String> coloresPartidos = new List<string>();
+
         PartidosPersistentes partidosPersistentes = new PartidosPersistentes();
-        
+        LecturaDeFicheroTxt lecturaColores = new LecturaDeFicheroTxt();
 
         public AgregarProcesoElectoral()
         {
@@ -32,6 +35,9 @@ namespace Elecciones
             partidosPers = partidosPersistentes.getPartidos();
             PartidoComboBox.ItemsSource = partidosPers;
 
+            coloresPartidos = lecturaColores.leerFichero();
+            ColoresComboBox.ItemsSource = coloresPartidos; 
+
         }
 
 
@@ -39,14 +45,14 @@ namespace Elecciones
         {
             String nombrePartido = PartidoComboBox.Text;
             String numEscanios = NumEscaniosPartido.Text;
-            String colorPartido = ColorPartido.Text;
+            String colorPartido = ColoresComboBox.Text;
             
             int numScanios;
 
             string numeroScaniosTotal = NumEscaniosTotal.Text;
-            if(string.IsNullOrWhiteSpace(numeroScaniosTotal))
+            if(string.IsNullOrWhiteSpace(nombrePartido) || string.IsNullOrWhiteSpace(numEscanios) || string.IsNullOrWhiteSpace(colorPartido))
             {
-                String mensajePorPantalla = "Primero completa los datos del proceso";
+                String mensajePorPantalla = "No ha introducido alguno de los campos";
                 MessageBox.Show(mensajePorPantalla);
             }
             else
@@ -54,9 +60,9 @@ namespace Elecciones
 
 
                 //Comprobamos si usuario ha introducido los dos valores pedidos
-                if (string.IsNullOrWhiteSpace(nombrePartido) || string.IsNullOrWhiteSpace(numEscanios) || string.IsNullOrWhiteSpace(colorPartido))
+                if (string.IsNullOrWhiteSpace(numeroScaniosTotal))
                 {
-                    String mensajePorPantalla = "No ha introducido alguno de los tres campos";
+                    String mensajePorPantalla = "Primero completa los datos del proceso";
                     MessageBox.Show(mensajePorPantalla);
                 }
                 else
@@ -78,7 +84,7 @@ namespace Elecciones
                                 Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
                                 partidos.Add(partidoPolitico);
 
-
+                                
 
                                 //Añadir a ListaPartidosPersistentes si no existe todavia
                                 if (!partidosPers.Contains(nombrePartido))
@@ -92,10 +98,10 @@ namespace Elecciones
                                 }
 
 
-                                //Añadimos al dataGrid //AQUI PROBLEMAS
-                                var nuevoPartidoData = new { PARTIDO = nombrePartido, ESCAÑOS = numScanios };
+
+                                Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
                                 //DataGridPartidos.ItemsSource = nuevoPartidoData;
-                                DataGridPartidos.Items.Add(nuevoPartidoData);
+                                DataGridPartidos.Items.Add(partido);
 
                             }
                             else
@@ -130,12 +136,12 @@ namespace Elecciones
             string nombreProceso = nombreEleccion.Text;
             string mayoriaAbsoluta = MayoriaAbsoluta.Text;
             string numeroDeEscaniosTotal = NumEscaniosTotal.Text;
-            DateTime? fechaSeleccionada = FechaEleccion.SelectedDate;
-
+            DateTime fechaSeleccionada;
+            
             int mayoriaEscanios;
             int totalEscanios;
 
-            if (string.IsNullOrWhiteSpace(nombreProceso) || string.IsNullOrWhiteSpace(numeroDeEscaniosTotal) || fechaSeleccionada == null || string.IsNullOrWhiteSpace(mayoriaAbsoluta))
+            if (string.IsNullOrWhiteSpace(nombreProceso) || string.IsNullOrWhiteSpace(numeroDeEscaniosTotal) || string.IsNullOrWhiteSpace(mayoriaAbsoluta) || FechaEleccion.SelectedDate.HasValue == false)
             {
                 String mensajePorPantalla = "No ha introducido alguno de los cuatro campos";
                 MessageBox.Show(mensajePorPantalla);
@@ -148,20 +154,35 @@ namespace Elecciones
                 }
                 else
                 {
+                    //OrdenaLista
+                    partidos.OrderByDescending(s => s.scanios);
+
                     //Aqui significa que todo ha ido bien
+                    //Instncia de la clase procesoElectoral
+                    fechaSeleccionada = FechaEleccion.SelectedDate.Value;
+                    ProcesoElectoral procesoNuevo = new ProcesoElectoral(nombreProceso, fechaSeleccionada, totalEscanios, mayoriaEscanios, partidos);
+                    
+
 
 
 
                 }
             }
         }
-
-        private void nombreEleccion_TextChanged(object sender, TextChangedEventArgs e)
+        //Método Ordenación de lista Partidos
+        private List<Partido> ordenarLista(List<Partido> partidos)
         {
+            List<Partido> sortedList = new List<Partido>();
 
+            sortedList = partidos.OrderBy(s => s.scanios).ToList();
+
+
+
+            return sortedList;
         }
 
-    //Dos metodos para conseguir que si cambia un elemento se cambie el otro, asi conseguir que la mayoría absoluta y escaños total no puedan ser erroneos
+
+        //Dos metodos para conseguir que si cambia un elemento se cambie el otro, asi conseguir que la mayoría absoluta y escaños total no puedan ser erroneos
         private void NumEscaniosTotal_TextChanged(object sender, TextChangedEventArgs e)
         {
             string numero = NumEscaniosTotal.Text;
