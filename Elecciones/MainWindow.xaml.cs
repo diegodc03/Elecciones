@@ -24,7 +24,8 @@ namespace Elecciones
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        //Instanciamos la ventana secundaria a null
+        VentanaSecundaria wsec = null;
 
         GraficoUnitario grafico;
         GraficoComparatorioEntreElecciones graficoComparativo;
@@ -118,9 +119,17 @@ namespace Elecciones
 */
         private void MenuConfig_Click(object sender, EventArgs e)
         {
-            VentanaSecundaria wsec = new VentanaSecundaria();
+            
+            if(wsec == null)
+            {
+                wsec = new VentanaSecundaria();
+            }
+
+            wsec.Owner = this;
+
+           
             wsec.Title = "Configuración";
-            wsec.ShowDialog();
+            wsec.Show();
 
             
         }
