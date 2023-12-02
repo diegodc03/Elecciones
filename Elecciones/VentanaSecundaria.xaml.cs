@@ -24,7 +24,7 @@ namespace Elecciones
         //Creamos una lista observable, aqui pasamos la lista de la ventana "AgregarProcesoElectoral" consiguiendo tenerla y poder rellanar el DataGrid
         //public ObservableCollection<ProcesoElectoral> listaProcesoElectoral { get; } = new ObservableCollection<ProcesoElectoral>();
         public List<Partido> listaPartidos;
-        List<ProcesoElectoral> procesosElectorales;
+        ObservableCollection<ProcesoElectoral> procesosElectorales;
 
 
 
@@ -46,7 +46,7 @@ namespace Elecciones
         {
             //DialogResult = true;
 
-            AgregarProcesoElectoral agregar = new AgregarProcesoElectoral();
+            AgregarProcesoElectoral agregar = new AgregarProcesoElectoral(procesosElectorales);
 
             //Me suscribo al avento
             agregar.ProcesosElectoralesActualizados += ListaProcesosElectorales;
@@ -58,6 +58,9 @@ namespace Elecciones
         
         private void ListaProcesosElectorales(object sender, ProcesosElectoralesEventArgs e)
         {
+            //Como paso todos los elementos otra vez a la ventanaProcesoElectorral, lo que pasa es que luego al devolverlos, se me pasan todos otra vez, y se añaden todos al dataGrid
+            // como no quiero que pase eso, elimino todos los elementos y asi no tengo problema
+            DataGridProcesosElectorales.Items.Clear();
             procesosElectorales = e.ProcesoElectorales;
 
             //Actualizamos DataGrid

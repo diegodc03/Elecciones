@@ -19,9 +19,9 @@ namespace Elecciones
     
     public class ProcesosElectoralesEventArgs : EventArgs
     {
-        public List<ProcesoElectoral> ProcesoElectorales { get; set; }
+        public ObservableCollection<ProcesoElectoral> ProcesoElectorales { get; set; }
 
-        public ProcesosElectoralesEventArgs(List<ProcesoElectoral> procesoElectorals)
+        public ProcesosElectoralesEventArgs(ObservableCollection<ProcesoElectoral> procesoElectorals)
         {
             ProcesoElectorales = procesoElectorals;
         }
@@ -34,23 +34,24 @@ namespace Elecciones
     public partial class AgregarProcesoElectoral : Window
     {
 
-        
+        //Declaro evento 
         public event EventHandler<ProcesosElectoralesEventArgs> ProcesosElectoralesActualizados;
 
         List<Partido> partidos = new List<Partido>();
-        List<ProcesoElectoral> listaProcesosElectorales = new List<ProcesoElectoral>();
+        ObservableCollection<ProcesoElectoral> listaProcesosElectorales;
 
         List<String> partidosPers = new List<string>();
         List<String> coloresPartidos = new List<string>();
 
         PartidosPersistentes partidosPersistentes = new PartidosPersistentes();
         LecturaDeFicheroTxt lecturaColores = new LecturaDeFicheroTxt();
+        List<ProcesoElectoral> prueba = new List<ProcesoElectoral>();
 
         int sumatorioNumeroEscanios = 0;
         int indiceFila = 0;
 
 
-        public AgregarProcesoElectoral()
+        public AgregarProcesoElectoral(ObservableCollection<ProcesoElectoral> procesosActualizados)
         {
             InitializeComponent();
             
@@ -60,6 +61,17 @@ namespace Elecciones
 
             coloresPartidos = lecturaColores.leerFichero();
             ColoresComboBox.ItemsSource = coloresPartidos;
+
+            if(procesosActualizados != null)
+            {
+                listaProcesosElectorales = new ObservableCollection<ProcesoElectoral>();
+                listaProcesosElectorales = procesosActualizados;
+            }
+            else
+            {
+                listaProcesosElectorales = new ObservableCollection<ProcesoElectoral>();
+            }
+            
 
             
 
@@ -213,15 +225,20 @@ namespace Elecciones
                     {
                         //MessageBox.Show("La cosa ha ido bien");
                         //OrdenaLista
-                        partidos.OrderByDescending(s => s.scanios);
+                        
+                        //partidos.OrderByDescending(s => s.scanios);
+                        List<Partido> auxiliar = new List<Partido>();
+                        auxiliar = partidos.OrderByDescending(x => x.scanios).ToList();
+
 
                         //Aqui significa que todo ha ido bien
                         //Instncia de la clase procesoElectoral
                         fechaSeleccionada = FechaEleccion.SelectedDate.Value;
-                        ProcesoElectoral procesoNuevo = new ProcesoElectoral(nombreProceso, fechaSeleccionada, totalEscanios, mayoriaEscanios, partidos);
+                        ProcesoElectoral procesoNuevo = new ProcesoElectoral(nombreProceso, fechaSeleccionada, totalEscanios, mayoriaEscanios, auxiliar);
 
                         //Se añade cada vez que se pulsa
                         //Se añade al observableCollection, haciendo que pueda luego pasar a la ventana secundaria
+                        
                         listaProcesosElectorales.Add(procesoNuevo);
 
                         //Se reinicia todos los textBox para introducir mas elementos
