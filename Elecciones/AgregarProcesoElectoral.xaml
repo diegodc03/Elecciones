@@ -57,6 +57,12 @@
                     </Button>
                 </StackPanel>
 
+                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="10">
+                    <Button Margin="10" Width="150" Height="50" Click="Salir_Click" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                        <Label >Salir</Label>
+                    </Button>
+                </StackPanel>
+
 
 
 

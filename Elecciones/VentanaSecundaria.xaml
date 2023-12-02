@@ -31,30 +31,30 @@
         
         
         
-        <DataGrid Name="ProcesosElectorales" Margin="20" Grid.Row="1">
+        <DataGrid Name="DataGridProcesosElectorales" Margin="20" Grid.Row="1"  SelectionChanged="DataGridProcesosElectorales_SelectionChanged">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="PROCESO ELECTORAL">
+                <DataGridTextColumn Header="PROCESO ELECTORAL" Width="180" Binding="{Binding nombreProcesoElectoral}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center" />
                         </Style>
                     </DataGridTextColumn.HeaderStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="FECHA">
+                <DataGridTextColumn Header="FECHA" Width="180" Binding="{Binding fechaProcesoElectoral}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter  Property="HorizontalContentAlignment" Value="Center"/>
                         </Style>
                     </DataGridTextColumn.HeaderStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="NÚMERO DE ESCAÑOS">
+                <DataGridTextColumn Header="NÚMERO DE ESCAÑOS" Width="180" Binding="{Binding numeroDeEscanios}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter  Property="HorizontalContentAlignment" Value="Center"/>
                         </Style>
                     </DataGridTextColumn.HeaderStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="MAYORÍA ABSOLUTA">
+                <DataGridTextColumn Header="MAYORÍA ABSOLUTA" Width="180" Binding="{Binding mayoriaAbsoluta}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter  Property="HorizontalContentAlignment" Value="Center"/>
@@ -65,17 +65,17 @@
         </DataGrid>
 
 
-        <DataGrid Name="PartidosPolíticos" Margin="20" Grid.Row="2">
+        <DataGrid Name="DataGridPartidosPolíticos" Margin="20" Grid.Row="2">
             <DataGrid.Columns>
-                
-                <DataGridTextColumn Header="PARTIDO" Width="Auto">
+
+                <DataGridTextColumn Header="PARTIDO" Width="100" Binding="{Binding nombrePartido}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter  Property="HorizontalContentAlignment" Value="Center" />
                         </Style>
                     </DataGridTextColumn.HeaderStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="ESCAÑOS">
+                <DataGridTextColumn Header="ESCAÑOS" Width="100" Binding="{Binding scanios}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter  Property="HorizontalContentAlignment" Value="Center"/>

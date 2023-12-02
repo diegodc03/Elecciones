@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -15,12 +16,27 @@ using System.Windows.Shapes;
 
 namespace Elecciones
 {
+    
+    public class ProcesosElectoralesEventArgs : EventArgs
+    {
+        public List<ProcesoElectoral> ProcesoElectorales { get; set; }
+
+        public ProcesosElectoralesEventArgs(List<ProcesoElectoral> procesoElectorals)
+        {
+            ProcesoElectorales = procesoElectorals;
+        }
+    }
+
+
     /// <summary>
     /// Lógica de interacción para AgregarProcesoElectoral.xaml
     /// </summary>
     public partial class AgregarProcesoElectoral : Window
     {
+
         
+        public event EventHandler<ProcesosElectoralesEventArgs> ProcesosElectoralesActualizados;
+
         List<Partido> partidos = new List<Partido>();
         List<ProcesoElectoral> listaProcesosElectorales = new List<ProcesoElectoral>();
 
@@ -31,16 +47,21 @@ namespace Elecciones
         LecturaDeFicheroTxt lecturaColores = new LecturaDeFicheroTxt();
 
         int sumatorioNumeroEscanios = 0;
-        
+        int indiceFila = 0;
+
+
         public AgregarProcesoElectoral()
         {
             InitializeComponent();
             
+            //Se añade en la parte de los Partidos los elementos al COMBOBOX
             partidosPers = partidosPersistentes.getPartidos();
             PartidoComboBox.ItemsSource = partidosPers;
 
             coloresPartidos = lecturaColores.leerFichero();
-            ColoresComboBox.ItemsSource = coloresPartidos; 
+            ColoresComboBox.ItemsSource = coloresPartidos;
+
+            
 
         }
 
@@ -81,11 +102,14 @@ namespace Elecciones
 
                         if(numScanios > 0)
                         {
-                            numScanios = Int32.Parse(numEscanios);
+
+                            
                             sumatorioNumeroEscanios += numScanios;
                             int.TryParse(numeroScaniosTotal, out escaniosPartidosComprobante);
                             if (sumatorioNumeroEscanios <= escaniosPartidosComprobante)
                             {
+                                //MessageBox.Show("La cosa esta yendo biennnnnnnn");
+                                Console.WriteLine("%d %d", sumatorioNumeroEscanios, escaniosPartidosComprobante);
                                 
                                 //Devuelve o una instancia de Partidos o null
                                 if (partidos.Find(x => x.nombrePartido.Contains(nombrePartido)) == null)
@@ -93,7 +117,7 @@ namespace Elecciones
 
                                     
                                     nombrePartido = nombrePartido.ToUpper();
-                                    int indiceFila = DataGridPartidos.SelectedIndex;
+                                     indiceFila = DataGridPartidos.SelectedIndex;
 
                                     //Se crea Instancia y se introduce en ListaDePartidos
                                     Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
@@ -117,7 +141,7 @@ namespace Elecciones
                                     Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
                                     //DataGridPartidos.ItemsSource = nuevoPartidoData;
                                     DataGridPartidos.Items.Add(partido);
-
+                                    indiceFila = DataGridPartidos.SelectedIndex;
                                     //Vuelvo a dejar los DATABOX y COMBOBOX en blanco
                                     PartidoComboBox.Text = "";
                                     NumEscaniosPartido.Text = "";
@@ -158,7 +182,7 @@ namespace Elecciones
             }
         }
 
-
+        //public event EventHandler<ProcesoElectoralEvenArgs> ProcesoElectoralEven;
 
 
         private void AniadirProcesoElectoral_Click(object sender, RoutedEventArgs e)
@@ -188,6 +212,7 @@ namespace Elecciones
                     //Compruebo que el numero de Escaños es igual, a la suma de los escaños de todos los partidos
                     if(sumatorioNumeroEscanios == totalEscanios)
                     {
+                        //MessageBox.Show("La cosa ha ido bien");
                         //OrdenaLista
                         partidos.OrderByDescending(s => s.scanios);
 
@@ -197,12 +222,23 @@ namespace Elecciones
                         ProcesoElectoral procesoNuevo = new ProcesoElectoral(nombreProceso, fechaSeleccionada, totalEscanios, mayoriaEscanios, partidos);
 
                         //Se añade cada vez que se pulsa
+                        //Se añade al observableCollection, haciendo que pueda luego pasar a la ventana secundaria
                         listaProcesosElectorales.Add(procesoNuevo);
 
                         //Se reinicia todos los textBox para introducir mas elementos
                         nombreEleccion.Text = "";
                         MayoriaAbsoluta.Text = "";
                         NumEscaniosTotal.Text = "";
+
+                        //Tengo que eliminar los partidos del datagrid
+                        for(int i = 0; i<indiceFila; i++)
+                        {
+                            DataGridPartidos.Items.Clear();
+                        }
+                        
+
+
+                        sumatorioNumeroEscanios = 0;
                     }
                     else
                     {
@@ -248,8 +284,11 @@ namespace Elecciones
             }
 
         }
-        
-        
-        
+
+        private void Salir_Click(object sender, RoutedEventArgs e)
+        {
+            ProcesosElectoralesActualizados?.Invoke(this, new ProcesosElectoralesEventArgs(listaProcesosElectorales));
+            this.Close();
+        }
     }
 }

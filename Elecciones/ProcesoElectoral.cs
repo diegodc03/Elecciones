@@ -9,12 +9,36 @@ namespace Elecciones
 
     public class ProcesoElectoral
     {
-        public String nombreProcesoElectoral { get; set; }
-        public DateTime fechaProcesoElectoral { get; set; }
-        public double numeroDeEscanios { get; set; }
-        public double mayoriaAbsoluta { get; set; }
-        
-        public List<Partido> Partidos { get; set; } // Lista de partidos asociados al proceso
+        public String nombreProcesoElectoral 
+        { 
+            get; 
+            set; 
+        }
+
+        public DateTime fechaProcesoElectoral 
+        {
+            get; 
+            set; 
+        }
+
+        public double numeroDeEscanios 
+        { 
+            get; 
+            set; 
+        }
+
+        public double mayoriaAbsoluta 
+        { 
+            get; 
+            set; 
+        }
+
+        // Lista de partidos asociados al proceso
+        public List<Partido> Partidos 
+        {
+            get; 
+            set; 
+        } 
 
         public ProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, List<Partido> partidos)
         {
