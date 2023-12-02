@@ -51,7 +51,6 @@ namespace Elecciones
             //Me suscribo al avento
             agregar.ProcesosElectoralesActualizados += ListaProcesosElectorales;
             
-
             agregar.Title = "Agregar Proceso Electoral";
             agregar.ShowDialog();
             
@@ -61,45 +60,40 @@ namespace Elecciones
         {
             procesosElectorales = e.ProcesoElectorales;
 
-
             //Actualizamos DataGrid
             foreach(ProcesoElectoral proceso in procesosElectorales)
             {
                 DataGridProcesosElectorales.Items.Add(proceso);
-            }
-
-            
+            } 
 
         }
+
 
         //Evcento al pulsar cada uno de los procesos Electorales
         //Este evento nos permite que dependiendo donde toquemos, tendremos los partidos politicos de cada proceso y solo será ir añadiendo al dataGrid
         private void DataGridProcesosElectorales_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(DataGridProcesosElectorales.SelectedItem != null)
+        {  
+            DataGridPartidosPoliticos.Items.Clear();
+
+            if (DataGridProcesosElectorales.SelectedItem != null)
             {
-
-                ProcesoElectoral proceso = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
-                List<Partido> partidos = new List<Partido>(proceso.Partidos);
                 
-                foreach(Partido partido in partidos)
+                ProcesoElectoral proceso = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
+
+                if (proceso != null)
                 {
-                    if(partido != null)
+                    List<Partido> partidos = new List<Partido>(proceso.Partidos);
+
+                    foreach (Partido partido in partidos)
                     {
-                        //Añadimos el partido al DataGrid del procesoElectoral
-                        DataGridPartidosPolíticos.Items.Add(partido);
-
-
-
+                        if (partido != null)
+                        {
+                            //Añadimos el partido al DataGrid del procesoElectoral
+                            DataGridPartidosPoliticos.Items.Add(partido);
+                        }
                     }
                 }
-
-
             }
-
-            
-
-
         }
 
         /*//Se ira haciendo

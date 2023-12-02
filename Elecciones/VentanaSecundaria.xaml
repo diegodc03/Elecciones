@@ -65,9 +65,8 @@
         </DataGrid>
 
 
-        <DataGrid Name="DataGridPartidosPolíticos" Margin="20" Grid.Row="2">
+        <DataGrid Name="DataGridPartidosPoliticos" Margin="20" Grid.Row="2">
             <DataGrid.Columns>
-
                 <DataGridTextColumn Header="PARTIDO" Width="100" Binding="{Binding nombrePartido}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">

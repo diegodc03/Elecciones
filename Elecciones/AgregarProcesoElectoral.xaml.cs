@@ -109,7 +109,6 @@ namespace Elecciones
                             if (sumatorioNumeroEscanios <= escaniosPartidosComprobante)
                             {
                                 //MessageBox.Show("La cosa esta yendo biennnnnnnn");
-                                Console.WriteLine("%d %d", sumatorioNumeroEscanios, escaniosPartidosComprobante);
                                 
                                 //Devuelve o una instancia de Partidos o null
                                 if (partidos.Find(x => x.nombrePartido.Contains(nombrePartido)) == null)
@@ -117,7 +116,7 @@ namespace Elecciones
 
                                     
                                     nombrePartido = nombrePartido.ToUpper();
-                                     indiceFila = DataGridPartidos.SelectedIndex;
+                                    indiceFila = DataGridPartidos.SelectedIndex;
 
                                     //Se crea Instancia y se introduce en ListaDePartidos
                                     Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
@@ -159,7 +158,7 @@ namespace Elecciones
                             {
                                 String mensajePorPantalla = "Tiene que poner un valor menor que el número de escaños del proceso electoral";
                                 MessageBox.Show(mensajePorPantalla);
-                                sumatorioNumeroEscanios -= numScanios;
+                                sumatorioNumeroEscanios = sumatorioNumeroEscanios - numScanios;
 
                             }
                             
@@ -230,14 +229,11 @@ namespace Elecciones
                         MayoriaAbsoluta.Text = "";
                         NumEscaniosTotal.Text = "";
 
+
                         //Tengo que eliminar los partidos del datagrid
-                        for(int i = 0; i<indiceFila; i++)
-                        {
-                            DataGridPartidos.Items.Clear();
-                        }
-                        
-
-
+                        //Hay que pasar todos los elementos de los partidos a 0, para que así no interfieran al añadir otro procesoElectoral
+                        DataGridPartidos.Items.Clear();
+                        partidos = new List<Partido>();
                         sumatorioNumeroEscanios = 0;
                     }
                     else
