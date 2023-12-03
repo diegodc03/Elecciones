@@ -53,7 +53,7 @@
 
                 <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="10">
                     <Button Margin="10" Width="150" Height="50" Click="AniadirProcesoElectoral_Click" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                        <Label >Añadir Partido Político</Label>
+                        <Label >Añadir Proceso Electoral</Label>
                     </Button>
                 </StackPanel>
 
@@ -76,14 +76,15 @@
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="51*"/>
+                    <ColumnDefinition Width="346*"/>
+                    <ColumnDefinition Width="397*"/>
                 </Grid.ColumnDefinitions>
 
 
 
 
-                <StackPanel Orientation="Vertical" Grid.Column="0">
+                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="2">
 
 
                     <StackPanel Margin="10,10,10,10" Grid.ColumnSpan="3" >
@@ -111,9 +112,20 @@
                             <Label >Añadir Partido Político</Label>
                         </Button>
                     </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="10 0 10 10" >
+                        <Button Margin="10" Width="150" Height="40" Click="BotonEditarPartidoPolitico_Click"  HorizontalAlignment="Center" VerticalAlignment="Center"  >
+                            <Label >Editar Partido Político</Label>
+                        </Button>
+
+                        <Button Margin="10" Width="150" Height="40" Click="BotonEliminarPartido_Click"  HorizontalAlignment="Center" VerticalAlignment="Center" >
+                            <Label >Eliminar Partido Político</Label>
+                        </Button>
+                    </StackPanel>
+
                 </StackPanel>
-                
-                <DataGrid Name="DataGridPartidos" Margin="20" Grid.Column="1">
+
+                <DataGrid Name="DataGridPartidos" Margin="20,20,20,20" Grid.Column="2">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="PARTIDO" Width="100" Binding="{Binding nombrePartido}">
                             <DataGridTextColumn.HeaderStyle>
@@ -122,7 +134,7 @@
                                 </Style>
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
-                        
+
                         <DataGridTextColumn Header="ESCAÑOS" Width="100"  Binding="{Binding scanios}">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
@@ -139,11 +151,11 @@
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
 
-                        
-                        
+
+
                     </DataGrid.Columns>
 
-                    
+
 
 
 

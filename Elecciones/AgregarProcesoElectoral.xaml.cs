@@ -49,19 +49,20 @@ namespace Elecciones
 
         int sumatorioNumeroEscanios = 0;
         int indiceFila = 0;
+        int modificacionPartidos = 0;
+        int modificacionProceso = 0;
+        
 
+       
+        
 
         public AgregarProcesoElectoral(ObservableCollection<ProcesoElectoral> procesosActualizados)
         {
             InitializeComponent();
+
+            introducirValoresComboBox();
+
             
-            //Se añade en la parte de los Partidos los elementos al COMBOBOX
-            partidosPers = partidosPersistentes.getPartidos();
-            PartidoComboBox.ItemsSource = partidosPers;
-
-            coloresPartidos = lecturaColores.leerFichero();
-            ColoresComboBox.ItemsSource = coloresPartidos;
-
             if(procesosActualizados != null)
             {
                 listaProcesosElectorales = new ObservableCollection<ProcesoElectoral>();
@@ -76,6 +77,55 @@ namespace Elecciones
             
 
         }
+        
+
+        //Contructor para editar proceso Electoral
+        public AgregarProcesoElectoral(ProcesoElectoral proceso)
+        {
+            InitializeComponent();
+
+            ProcesoElectoral procesoAEditar = proceso;
+            introducirValoresComboBox();
+
+            //Rellenamos los datos en este metodo
+            EditarProcesoElectoral(procesoAEditar);
+            modificacionProceso = 1;
+        }
+
+
+        //Metodos para editar el proceso a Editar
+        private void EditarProcesoElectoral(ProcesoElectoral proceso)
+        {
+            //PartidoComboBox.Text = proceso.nombreProcesoElectoral;
+            //NumEscaniosPartido.Text = proceso.numeroDeEscanios.ToString();
+            
+
+            nombreEleccion.Text = proceso.nombreProcesoElectoral;
+            NumEscaniosTotal.Text = proceso.numeroDeEscanios.ToString();
+            MayoriaAbsoluta.Text = proceso.mayoriaAbsoluta.ToString();
+
+            partidos = proceso.Partidos;
+            foreach(Partido partido in partidos)
+            {
+                DataGridPartidos.Items.Add(partido);
+                sumatorioNumeroEscanios = sumatorioNumeroEscanios + partido.scanios;
+            }
+
+
+
+
+        }
+
+        private void introducirValoresComboBox()
+        {
+            //Se añade en la parte de los Partidos los elementos al COMBOBOX
+            partidosPers = partidosPersistentes.getPartidos();
+            PartidoComboBox.ItemsSource = partidosPers;
+
+            coloresPartidos = lecturaColores.leerFichero();
+            ColoresComboBox.ItemsSource = coloresPartidos;
+
+        }
 
 
         private void AniadirPartidoPolitico_Click(object sender, RoutedEventArgs e)
@@ -85,10 +135,13 @@ namespace Elecciones
             String colorPartido = ColoresComboBox.Text;
             
             int numScanios;
-            
-
             int escaniosPartidosComprobante;
             
+
+           
+
+
+
 
             string numeroScaniosTotal = NumEscaniosTotal.Text;
             if(string.IsNullOrWhiteSpace(nombrePartido) || string.IsNullOrWhiteSpace(numEscanios) || string.IsNullOrWhiteSpace(colorPartido))
@@ -115,73 +168,115 @@ namespace Elecciones
                         if(numScanios > 0)
                         {
 
-                            
-                            sumatorioNumeroEscanios += numScanios;
                             int.TryParse(numeroScaniosTotal, out escaniosPartidosComprobante);
-                            if (sumatorioNumeroEscanios <= escaniosPartidosComprobante)
+                            if (modificacionPartidos == 0)
                             {
-                                //MessageBox.Show("La cosa esta yendo biennnnnnnn");
-                                
-                                //Devuelve o una instancia de Partidos o null
-                                if (partidos.Find(x => x.nombrePartido.Contains(nombrePartido)) == null)
+                                sumatorioNumeroEscanios += numScanios;
+                                if (sumatorioNumeroEscanios <= escaniosPartidosComprobante)
                                 {
+                                    //MessageBox.Show("La cosa esta yendo biennnnnnnn");
 
-                                    
-                                    nombrePartido = nombrePartido.ToUpper();
-                                    indiceFila = DataGridPartidos.SelectedIndex;
-
-                                    //Se crea Instancia y se introduce en ListaDePartidos
-                                    Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
-                                    partidos.Add(partidoPolitico);
-
-
-
-                                    //Añadir a ListaPartidosPersistentes si no existe todavia
-                                    if (!partidosPers.Contains(nombrePartido))
+                                    //Devuelve o una instancia de Partidos o null
+                                    if (partidos.Find(x => x.nombrePartido.Contains(nombrePartido)) == null)
                                     {
-                                        partidosPersistentes.AgregarPartido(partidoPolitico.nombrePartido);
 
-                                        //Actualizar ComboBox
-                                        partidosPers = partidosPersistentes.getPartidos();
-                                        PartidoComboBox.ItemsSource = null;
-                                        PartidoComboBox.ItemsSource = partidosPers;
+
+                                        nombrePartido = nombrePartido.ToUpper();
+                                        indiceFila = DataGridPartidos.SelectedIndex;
+
+                                        //Se crea Instancia y se introduce en ListaDePartidos
+                                        Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
+                                        partidos.Add(partidoPolitico);
+
+
+
+                                        //Añadir a ListaPartidosPersistentes si no existe todavia
+                                        if (!partidosPers.Contains(nombrePartido))
+                                        {
+                                            partidosPersistentes.AgregarPartido(partidoPolitico.nombrePartido);
+
+                                            //Actualizar ComboBox
+                                            partidosPers = partidosPersistentes.getPartidos();
+                                            PartidoComboBox.ItemsSource = null;
+                                            PartidoComboBox.ItemsSource = partidosPers;
+                                        }
+
+
+
+                                        Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
+                                        //DataGridPartidos.ItemsSource = nuevoPartidoData;
+                                        DataGridPartidos.Items.Add(partido);
+                                        indiceFila = DataGridPartidos.SelectedIndex;
+                                        //Vuelvo a dejar los DATABOX y COMBOBOX en blanco
+                                        PartidoComboBox.Text = "";
+                                        NumEscaniosPartido.Text = "";
+                                        ColoresComboBox.Text = "";
+
+
                                     }
-
-
-
-                                    Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
-                                    //DataGridPartidos.ItemsSource = nuevoPartidoData;
-                                    DataGridPartidos.Items.Add(partido);
-                                    indiceFila = DataGridPartidos.SelectedIndex;
-                                    //Vuelvo a dejar los DATABOX y COMBOBOX en blanco
-                                    PartidoComboBox.Text = "";
-                                    NumEscaniosPartido.Text = "";
-                                    ColoresComboBox.Text = "Introduce un Color";
-
-
+                                    else
+                                    {
+                                        String mensajePorPantalla = "Ya existe ese partido político";
+                                        MessageBox.Show(mensajePorPantalla);
+                                    }
                                 }
                                 else
                                 {
-                                    String mensajePorPantalla = "Ya existe ese partido político";
+                                    String mensajePorPantalla = "Tiene que poner un valor menor que el número de escaños del proceso electoral";
                                     MessageBox.Show(mensajePorPantalla);
+                                    sumatorioNumeroEscanios = sumatorioNumeroEscanios - numScanios;
+
                                 }
                             }
                             else
                             {
-                                String mensajePorPantalla = "Tiene que poner un valor menor que el número de escaños del proceso electoral";
-                                MessageBox.Show(mensajePorPantalla);
-                                sumatorioNumeroEscanios = sumatorioNumeroEscanios - numScanios;
+                                //En este momento sabemos que se quieren modificar los datos
+                                nombrePartido = nombrePartido.ToUpper();
+                                indiceFila = DataGridPartidos.SelectedIndex;
 
-                            }
-                            
+
+                                //Cogemos el Partido que esta en la lista
+                                Partido partidoRemplazo = partidos.Find(x => x.nombrePartido.Contains(nombrePartido));
+                                sumatorioNumeroEscanios = sumatorioNumeroEscanios - partidoRemplazo.scanios;
+                                sumatorioNumeroEscanios = sumatorioNumeroEscanios + numScanios;
+
+                                if (sumatorioNumeroEscanios <= escaniosPartidosComprobante)
+                                {
+                                    int indice = partidos.IndexOf(partidoRemplazo);
+
+                                    //Se crea Instancia y se introduce en ListaDePartidos
+                                    Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
+                                    partidos[indice] = partidoPolitico;
+
+                                    DataGridPartidos.Items.Clear();
+                                    foreach (Partido part in partidos)
+                                    {
+                                        DataGridPartidos.Items.Add(part);
+                                    }
+
+                                    //Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
+                                    //DataGridPartidos.ItemsSource = nuevoPartidoData;
+                                    //DataGridPartidos.Items.Add(partido);
+                                    //indiceFila = DataGridPartidos.SelectedIndex;
+                                    //Vuelvo a dejar los DATABOX y COMBOBOX en blanco
+                                    PartidoComboBox.Text = "";
+                                    NumEscaniosPartido.Text = "";
+                                    ColoresComboBox.Text = "";
+                                    modificacionPartidos = 0;
+                                }
+                                else
+                                {       
+                                    String mensajePorPantalla = "Tiene que poner un valor menor que el número de escaños del proceso electoral";
+                                    MessageBox.Show(mensajePorPantalla);
+                                   sumatorioNumeroEscanios = sumatorioNumeroEscanios - numScanios;                   
+                                }
+                            }  
                         }
                         else
                         {
                             String mensajePorPantalla = "Ha introducido un Valor 0 o negativo";
                             MessageBox.Show(mensajePorPantalla);
                         }
-                        
-
                     }
                     else
                     {
@@ -205,6 +300,9 @@ namespace Elecciones
             
             int mayoriaEscanios;
             int totalEscanios;
+
+            
+
 
             if (string.IsNullOrWhiteSpace(nombreProceso) || string.IsNullOrWhiteSpace(numeroDeEscaniosTotal) || string.IsNullOrWhiteSpace(mayoriaAbsoluta) || FechaEleccion.SelectedDate.HasValue == false)
             {
@@ -238,8 +336,27 @@ namespace Elecciones
 
                         //Se añade cada vez que se pulsa
                         //Se añade al observableCollection, haciendo que pueda luego pasar a la ventana secundaria
+                        if(modificacionProceso == 0)
+                        {
+                            listaProcesosElectorales.Add(procesoNuevo);
+                        }
+                        else
+                        {
+                            ProcesoElectoral procesoRemplazo = listaProcesosElectorales.FirstOrDefault(x => x.nombreProcesoElectoral.Contains(nombreProceso));
+                            int indice = listaProcesosElectorales.IndexOf(procesoRemplazo);
+
+                            //Se crea Instancia y se introduce en ListaDePartidos
+                            
+                            listaProcesosElectorales[indice] = procesoNuevo;
+
+                            DataGridPartidos.Items.Clear();
+                            foreach (ProcesoElectoral proceso in listaProcesosElectorales)
+                            {
+                                DataGridPartidos.Items.Add(proceso);
+                            }
+                            modificacionProceso = 1;
+                        }
                         
-                        listaProcesosElectorales.Add(procesoNuevo);
 
                         //Se reinicia todos los textBox para introducir mas elementos
                         nombreEleccion.Text = "";
@@ -303,5 +420,49 @@ namespace Elecciones
             ProcesosElectoralesActualizados?.Invoke(this, new ProcesosElectoralesEventArgs(listaProcesosElectorales));
             this.Close();
         }
+
+
+
+        private void BotonEliminarPartido_Click(object sender, RoutedEventArgs e)
+        {
+            Partido partidoSeleccionado = DataGridPartidos.SelectedItem as Partido;
+
+            if (partidoSeleccionado != null)
+            {
+                //Modfiica el numero de scanios total
+                sumatorioNumeroEscanios = sumatorioNumeroEscanios - partidoSeleccionado.scanios;
+
+                partidos.Remove(partidoSeleccionado);
+
+                DataGridPartidos.Items.Clear();
+                //Añadimos otra vez todo correctamente sin el elemento seleccionado
+                foreach (Partido part in partidos)
+                {
+                    DataGridPartidos.Items.Add(part);
+                }
+
+
+            }
+        }
+
+        private void BotonEditarPartidoPolitico_Click(object sender, RoutedEventArgs e)
+        {
+            Partido partidoSeleccionado = DataGridPartidos.SelectedItem as Partido;
+
+            if(partidoSeleccionado != null)
+            {
+                PartidoComboBox.Text = partidoSeleccionado.nombrePartido;
+                NumEscaniosPartido.Text = partidoSeleccionado.scanios.ToString();
+                ColoresComboBox.Text = partidoSeleccionado.color;
+
+                modificacionPartidos = 1;
+
+            }
+
+
+
+        }
+
+
     }
 }

@@ -99,16 +99,38 @@ namespace Elecciones
             }
         }
 
-        /*//Se ira haciendo
+        
         private void BotonEliminarEleccion_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            ProcesoElectoral procesoElectoralSeleccionado = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
+
+            if(procesoElectoralSeleccionado != null)
+            {
+                procesosElectorales.Remove(procesoElectoralSeleccionado);
+
+                DataGridProcesosElectorales.Items.Clear();
+                //Añadimos otra vez todo correctamente sin el elemento seleccionado
+                foreach(ProcesoElectoral proceso in procesosElectorales)
+                {
+                    DataGridProcesosElectorales.Items.Add(proceso);
+                }
+
+
+            }
         }
+
+        
         private void BotonEditarEleccion_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            ProcesoElectoral procesoElectoralSeleccionado = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
+            if(procesoElectoralSeleccionado != null)
+            {
+                AgregarProcesoElectoral agregar = new AgregarProcesoElectoral(procesoElectoralSeleccionado);
+                agregar.Show();
+            }
+
         }
-    */
+    
 
     }
 }

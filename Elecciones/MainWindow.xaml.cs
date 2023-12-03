@@ -36,7 +36,7 @@ namespace Elecciones
             InitializeComponent();
             /*
             //proceso1 = new ProcesoElectoral("Elecciones 2022", "01/01/2022", 410);
-
+            proceso1 = new ProcesoElectoral("Elecciones 2026", "01/01/2026", 410, 205, new List<Partido>);
             proceso1.Partidos.Add(new Partido("PP", 150, "Blue"));
             proceso1.Partidos.Add(new Partido("PSOE", 120, "Red"));
             proceso1.Partidos.Add(new Partido("VOX", 60, "Green"));
@@ -58,8 +58,8 @@ namespace Elecciones
             proceso1.Partidos.Add(new Partido("Ciudadanos", 5, "Black"));
 
 
-
-            proceso2 = new ProcesoElectoral("Elecciones 2026", "01/01/2026", 410);
+            
+            proceso2 = new ProcesoElectoral("Elecciones 2026", "01/01/2026", 410, 205, new List<Partido>);
             proceso2.Partidos.Add(new Partido("PSOE", 160, "Red"));
             proceso2.Partidos.Add(new Partido("PP", 100, "Blue"));
             proceso2.Partidos.Add(new Partido("SUMAR", 70, "Pink"));
@@ -73,8 +73,8 @@ namespace Elecciones
             //canvasGrafica.Width = xrealmax - xrealmin;
             //canvasGrafica.Height = yrealmax - yrealmin;
 
-
             */
+            
 
         }
 
