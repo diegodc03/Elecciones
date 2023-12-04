@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,13 +35,13 @@ namespace Elecciones
         }
 
         // Lista de partidos asociados al proceso
-        public List<Partido> Partidos 
+        public ObservableCollection<Partido> Partidos 
         {
             get; 
             set; 
         } 
 
-        public ProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, List<Partido> partidos)
+        public ProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, ObservableCollection<Partido> partidos)
         {
             this.nombreProcesoElectoral = nombreEleccion;
             this.fechaProcesoElectoral = fechaProceso;
@@ -48,8 +49,8 @@ namespace Elecciones
             this.mayoriaAbsoluta = mayoria;
            
             //Se crea una lista nueva de partidos para que se vayan introduciendo
-            Partidos = new List<Partido>();
-            this.Partidos = partidos.ToList();
+            ObservableCollection<Partido> Partidos = new ObservableCollection<Partido>();
+            this.Partidos = partidos;
 
         }
         
@@ -77,7 +78,7 @@ namespace Elecciones
 
     public static class ProcesoElectoralFactory
     {
-        public static ProcesoElectoral CrearProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, List<Partido> partidos)
+        public static ProcesoElectoral CrearProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, ObservableCollection<Partido> partidos)
         {
             return new ProcesoElectoral(nombreEleccion, fechaProceso, numEscanios, mayoria, partidos);
         }

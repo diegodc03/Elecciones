@@ -76,7 +76,8 @@
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="51*"/>
+                    <ColumnDefinition Width="27*"/>
+                    <ColumnDefinition Width="24*"/>
                     <ColumnDefinition Width="346*"/>
                     <ColumnDefinition Width="397*"/>
                 </Grid.ColumnDefinitions>
@@ -84,7 +85,7 @@
 
 
 
-                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="2">
+                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="3">
 
 
                     <StackPanel Margin="10,10,10,10" Grid.ColumnSpan="3" >
@@ -125,7 +126,7 @@
 
                 </StackPanel>
 
-                <DataGrid Name="DataGridPartidos" Margin="20,20,20,20" Grid.Column="2">
+                <DataGrid Name="DataGridPartidos" AutoGenerateColumns="False" Margin="20,20,20,20" Grid.Column="3" ItemsSource="{Binding partidos}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="PARTIDO" Width="100" Binding="{Binding nombrePartido}">
                             <DataGridTextColumn.HeaderStyle>

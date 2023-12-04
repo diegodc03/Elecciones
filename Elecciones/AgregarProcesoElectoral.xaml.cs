@@ -19,7 +19,10 @@ namespace Elecciones
     
     public class ProcesosElectoralesEventArgs : EventArgs
     {
-        public ObservableCollection<ProcesoElectoral> ProcesoElectorales { get; set; }
+        public ObservableCollection<ProcesoElectoral> ProcesoElectorales { 
+            get; 
+            set; 
+        }
 
         public ProcesosElectoralesEventArgs(ObservableCollection<ProcesoElectoral> procesoElectorals)
         {
@@ -37,7 +40,7 @@ namespace Elecciones
         //Declaro evento 
         public event EventHandler<ProcesosElectoralesEventArgs> ProcesosElectoralesActualizados;
 
-        List<Partido> partidos = new List<Partido>();
+        ObservableCollection<Partido> partidos = new ObservableCollection<Partido>();
         ObservableCollection<ProcesoElectoral> listaProcesosElectorales;
 
         List<String> partidosPers = new List<string>();
@@ -177,7 +180,7 @@ namespace Elecciones
                                     //MessageBox.Show("La cosa esta yendo biennnnnnnn");
 
                                     //Devuelve o una instancia de Partidos o null
-                                    if (partidos.Find(x => x.nombrePartido.Contains(nombrePartido)) == null)
+                                    if (partidos.FirstOrDefault(x => x.nombrePartido.Contains(nombrePartido)) == null)
                                     {
 
 
@@ -205,7 +208,7 @@ namespace Elecciones
 
                                         Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
                                         //DataGridPartidos.ItemsSource = nuevoPartidoData;
-                                        DataGridPartidos.Items.Add(partido);
+                                        DataGridPartidos.ItemsSource = partidos;
                                         indiceFila = DataGridPartidos.SelectedIndex;
                                         //Vuelvo a dejar los DATABOX y COMBOBOX en blanco
                                         PartidoComboBox.Text = "";
@@ -236,7 +239,7 @@ namespace Elecciones
 
 
                                 //Cogemos el Partido que esta en la lista
-                                Partido partidoRemplazo = partidos.Find(x => x.nombrePartido.Contains(nombrePartido));
+                                Partido partidoRemplazo = partidos.FirstOrDefault(x => x.nombrePartido.Contains(nombrePartido));
                                 sumatorioNumeroEscanios = sumatorioNumeroEscanios - partidoRemplazo.scanios;
                                 sumatorioNumeroEscanios = sumatorioNumeroEscanios + numScanios;
 
@@ -248,11 +251,11 @@ namespace Elecciones
                                     Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
                                     partidos[indice] = partidoPolitico;
 
-                                    DataGridPartidos.Items.Clear();
-                                    foreach (Partido part in partidos)
-                                    {
-                                        DataGridPartidos.Items.Add(part);
-                                    }
+                                    //DataGridPartidos.Items.Clear();
+                                    //foreach (Partido part in partidos)
+                                    //{
+                                    DataGridPartidos.ItemsSource = partidos;
+                                    //}
 
                                     //Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
                                     //DataGridPartidos.ItemsSource = nuevoPartidoData;
@@ -325,8 +328,8 @@ namespace Elecciones
                         //OrdenaLista
                         
                         //partidos.OrderByDescending(s => s.scanios);
-                        List<Partido> auxiliar = new List<Partido>();
-                        auxiliar = partidos.OrderByDescending(x => x.scanios).ToList();
+                        ObservableCollection<Partido> auxiliar = new ObservableCollection<Partido>(partidos.OrderByDescending(x => x.scanios));
+                        //auxiliar = partidos.OrderByDescending(x => x.scanios).ToList();
 
 
                         //Aqui significa que todo ha ido bien
@@ -349,11 +352,11 @@ namespace Elecciones
                             
                             listaProcesosElectorales[indice] = procesoNuevo;
 
-                            DataGridPartidos.Items.Clear();
-                            foreach (ProcesoElectoral proceso in listaProcesosElectorales)
-                            {
-                                DataGridPartidos.Items.Add(proceso);
-                            }
+                            //DataGridPartidos.Items.Clear();
+                            //foreach (ProcesoElectoral proceso in listaProcesosElectorales)
+                            //{
+                                DataGridPartidos.ItemsSource = listaProcesosElectorales;
+                            //}
                             modificacionProceso = 1;
                         }
                         
@@ -366,8 +369,8 @@ namespace Elecciones
 
                         //Tengo que eliminar los partidos del datagrid
                         //Hay que pasar todos los elementos de los partidos a 0, para que así no interfieran al añadir otro procesoElectoral
-                        DataGridPartidos.Items.Clear();
-                        partidos = new List<Partido>();
+                        DataGridPartidos.ItemsSource = null;
+                        partidos = new ObservableCollection<Partido>();
                         sumatorioNumeroEscanios = 0;
                     }
                     else
@@ -434,12 +437,12 @@ namespace Elecciones
 
                 partidos.Remove(partidoSeleccionado);
 
-                DataGridPartidos.Items.Clear();
+                //DataGridPartidos.Items.Clear();
                 //Añadimos otra vez todo correctamente sin el elemento seleccionado
-                foreach (Partido part in partidos)
-                {
-                    DataGridPartidos.Items.Add(part);
-                }
+                //foreach (Partido part in partidos)
+                //{
+                    DataGridPartidos.ItemsSource = partidos;
+                
 
 
             }

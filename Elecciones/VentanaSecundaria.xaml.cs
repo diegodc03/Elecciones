@@ -16,25 +16,48 @@ using System.Windows.Shapes;
 
 namespace Elecciones
 {
+    public class ItemEventArgs : EventArgs
+    {
+        public ObservableCollection<ProcesoElectoral> procesoElectoral
+        {
+            get;
+            set;
+        }
 
-    
+        public ItemEventArgs(ObservableCollection<ProcesoElectoral> proceso)
+        {
+            procesoElectoral = proceso;
+        }
+    }
+
+
+   
+
+
 
     public partial class VentanaSecundaria : Window
     {
         //Creamos una lista observable, aqui pasamos la lista de la ventana "AgregarProcesoElectoral" consiguiendo tenerla y poder rellanar el DataGrid
         //public ObservableCollection<ProcesoElectoral> listaProcesoElectoral { get; } = new ObservableCollection<ProcesoElectoral>();
-        public List<Partido> listaPartidos;
-        ObservableCollection<ProcesoElectoral> procesosElectorales;
+        ObservableCollection<Partido> listaPartidos;
+        ObservableCollection<ProcesoElectoral> procesosElectorales = new ObservableCollection<ProcesoElectoral>();
+        ObservableCollection<Partido> partidosPoliticos = new ObservableCollection<Partido>();
+        ObservableCollection<ProcesoElectoral> procesosGraficas = new ObservableCollection<ProcesoElectoral> ();
+        
+        //Evento que salta cuando cambiamos los elementos de la grafica
+        //public event Action<ObservableCollection<ProcesoElectoral>> OnDatosActualizados;
 
 
+        private TipoGrafica tipoGrafica;
 
-
-        public VentanaSecundaria()
+        public VentanaSecundaria(TipoGrafica tipo)
         {
             InitializeComponent();
-            
-            
+
+            this.tipoGrafica = tipo;
         }
+
+
 
         private void BotonOk_Click(object sender, RoutedEventArgs e)
         {
@@ -60,14 +83,17 @@ namespace Elecciones
         {
             //Como paso todos los elementos otra vez a la ventanaProcesoElectorral, lo que pasa es que luego al devolverlos, se me pasan todos otra vez, y se añaden todos al dataGrid
             // como no quiero que pase eso, elimino todos los elementos y asi no tengo problema
-            DataGridProcesosElectorales.Items.Clear();
+            
+            
+            
+            //DataGridProcesosElectorales.Items.Clear();
             procesosElectorales = e.ProcesoElectorales;
-
+            DataGridProcesosElectorales.ItemsSource = procesosElectorales;
             //Actualizamos DataGrid
-            foreach(ProcesoElectoral proceso in procesosElectorales)
-            {
-                DataGridProcesosElectorales.Items.Add(proceso);
-            } 
+            //foreach(ProcesoElectoral proceso in procesosElectorales)
+            //{
+            //    DataGridProcesosElectorales.Items.Add(proceso);
+            //} 
 
         }
 
@@ -76,7 +102,20 @@ namespace Elecciones
         //Este evento nos permite que dependiendo donde toquemos, tendremos los partidos politicos de cada proceso y solo será ir añadiendo al dataGrid
         private void DataGridProcesosElectorales_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {  
-            DataGridPartidosPoliticos.Items.Clear();
+
+            if(tipoGrafica == TipoGrafica.Unitaria || tipoGrafica == TipoGrafica.Pactometro)
+            {
+                procesosGraficas.Clear();
+                if(DataGridProcesosElectorales.SelectedItem != null && DataGridProcesosElectorales.SelectedItem is ProcesoElectoral)
+                {
+                    //Tenemos el proceso
+                    procesosGraficas.Add(DataGridProcesosElectorales.SelectedItem as ProcesoElectoral);
+                    ActualizarGrafica(procesosGraficas);
+                    //O hacemos un evento o metodo para llamar
+                }
+            }
+
+            DataGridPartidosPoliticos.ItemsSource=null;
 
             if (DataGridProcesosElectorales.SelectedItem != null)
             {
@@ -85,21 +124,66 @@ namespace Elecciones
 
                 if (proceso != null)
                 {
-                    List<Partido> partidos = new List<Partido>(proceso.Partidos);
-
-                    foreach (Partido partido in partidos)
-                    {
-                        if (partido != null)
-                        {
-                            //Añadimos el partido al DataGrid del procesoElectoral
-                            DataGridPartidosPoliticos.Items.Add(partido);
-                        }
-                    }
+                     
+                    partidosPoliticos = proceso.Partidos;
+                    DataGridPartidosPoliticos.ItemsSource = partidosPoliticos;
+                    
                 }
             }
         }
 
-        
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            //Si se cambia y no estamos en la grafica comparativa no cambiamos nada ya que no queremos nada
+            if(tipoGrafica == TipoGrafica.Comparatoria)
+            {
+                var checkBox = sender as CheckBox; 
+                ProcesoElectoral proc = checkBox.DataContext as ProcesoElectoral;
+                if (!procesosGraficas.Contains(proc)) {
+                    procesosGraficas.Add(proc);
+                    ActualizarGrafica(procesosGraficas);
+                }
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //Si se cambia y no estamos en la grafica comparativa no cambiamos nada ya que no queremos nada
+            if (tipoGrafica == TipoGrafica.Comparatoria)
+            {
+                var checkBox = sender as CheckBox;
+                ProcesoElectoral proc = checkBox.DataContext as ProcesoElectoral;
+                if (procesosGraficas.Contains(proc))
+                {
+                    procesosGraficas.Remove(proc);
+                    ActualizarGrafica(procesosGraficas);
+                }
+            }
+        }
+
+        public event EventHandler<ItemEventArgs> ItemChanged;
+
+        public void OnItemChanged(ItemEventArgs e)
+        {
+            if (ItemChanged != null)
+            {
+                ItemChanged(this, e);
+            }
+        }
+
+        private void ActualizarGrafica(ObservableCollection<ProcesoElectoral> datos)
+        {
+            //ItemChanged?.Invoke(this, new ItemEventArgs(datos));
+
+            //Estamos aqui para pasar a la ventana principal
+            //Datos es la collection donde he metido los valores para pasar a la ventana prinipal
+            if (procesosGraficas != null)
+            {
+                OnItemChanged(new ItemEventArgs((ObservableCollection<ProcesoElectoral>)datos));
+            }
+        }
+
+
         private void BotonEliminarEleccion_Click(object sender, RoutedEventArgs e)
         {
             ProcesoElectoral procesoElectoralSeleccionado = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
@@ -108,14 +192,12 @@ namespace Elecciones
             {
                 procesosElectorales.Remove(procesoElectoralSeleccionado);
 
-                DataGridProcesosElectorales.Items.Clear();
+                //DataGridProcesosElectorales.Items.Clear();
                 //Añadimos otra vez todo correctamente sin el elemento seleccionado
-                foreach(ProcesoElectoral proceso in procesosElectorales)
-                {
-                    DataGridProcesosElectorales.Items.Add(proceso);
-                }
-
-
+                //foreach(ProcesoElectoral proceso in procesosElectorales)
+                //{
+                    DataGridProcesosElectorales.ItemsSource = procesosElectorales;
+                //}
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace Elecciones
         }
 
 
-        public void MostrarGrafico(List<ProcesoElectoral> procesos)
+        public void MostrarGrafico(ObservableCollection<ProcesoElectoral> procesos)
         {
 
             double espacioEntreRectangulos = 15;

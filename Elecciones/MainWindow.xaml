@@ -26,12 +26,13 @@
 
             <MenuItem Header="_Opciones" >
                 <MenuItem Header="_Gráfica Unitaria"
-                          Click="GraficaSoloUnaEleccion_Click"
+                          Click="graficaUnitaria_Click"
                           />
                 <MenuItem Header="_Grafica Comparatoria"
-                          Click="graficaComparatoriaEntreElecciones_Click"
+                          Click="graficaComparatoria_Click"
                           />
                 <MenuItem Header="_Gráfica Pactómetro"
+                          Click="graficaPactometro_Click"
                           />
                 <MenuItem Header="Configuración"
                           Click="MenuConfig_Click"
