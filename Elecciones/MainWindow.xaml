@@ -13,6 +13,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
 
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -21,33 +22,81 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        <TabControl TabStripPlacement="Bottom" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="4">
+            
+            <TabItem Header="Grafica Unitaria" Height="Auto" Width="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.ColumnSpan="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Canvas Name="canvasUnitaria" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30"></Canvas>
+                </Grid>
+                
+            </TabItem>
+            <TabItem Header="Grafica Comparativa" Height="Auto" Width="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Canvas Name="canvasComparativa" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30"></Canvas>
+
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Grafica Pactómetro" Height="Auto" Width="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Canvas Name="canvasPactometro" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30"></Canvas>
+
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+            <Menu Grid.Row="0" Grid.ColumnSpan="4">
 
             <MenuItem Header="_Opciones" >
-                <MenuItem Header="_Gráfica Unitaria"
-                          Click="graficaUnitaria_Click"
-                          />
-                <MenuItem Header="_Grafica Comparatoria"
-                          Click="graficaComparatoria_Click"
-                          />
-                <MenuItem Header="_Gráfica Pactómetro"
-                          Click="graficaPactometro_Click"
-                          />
                 <MenuItem Header="Configuración"
                           Click="MenuConfig_Click"
                           />
-
             </MenuItem>
 
 
         </Menu>
         <!--Aqui es donde pondre la grafica, en la parte gris-->
-        <Canvas Name="canvasGrafica" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="2" Margin="30">
+        
             
             
             
             
-        </Canvas>
+        
     </Grid>
 </Window>

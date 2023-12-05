@@ -31,7 +31,7 @@
 
 
 
-        <DataGrid Name="DataGridProcesosElectorales" AutoGenerateColumns="False" Margin="20" Grid.Row="1"  SelectionChanged="DataGridProcesosElectorales_SelectionChanged" ItemsSource="{Binding procesosElectorales}">
+        <DataGrid Name="DataGridProcesosElectorales" SelectionMode="Single" AutoGenerateColumns="False" Margin="20" Grid.Row="1"  SelectionChanged="DataGridProcesosElectorales_SelectionChanged"  ItemsSource="{Binding procesosElectorales}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="PROCESO ELECTORAL" Width="170" Binding="{Binding nombreProcesoElectoral}">
                     <DataGridTextColumn.HeaderStyle>
@@ -61,21 +61,11 @@
                         </Style>
                     </DataGridTextColumn.HeaderStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Header="Check">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox
-                              Checked="CheckBox_Checked"
-                              Unchecked="CheckBox_Unchecked" 
-                              HorizontalAlignment="Center"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>            
         </DataGrid>
 
 
-        <DataGrid Name="DataGridPartidosPoliticos" AutoGenerateColumns="False" Margin="20" Grid.Row="2" ItemsSource="{Binding partidosPoliticos}">
+        <DataGrid Name="DataGridPartidosPoliticos" SelectionMode="Single" AutoGenerateColumns="False" Margin="20" Grid.Row="2" ItemsSource="{Binding partidosPoliticos}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="PARTIDO" Width="100" Binding="{Binding nombrePartido}">
                     <DataGridTextColumn.HeaderStyle>

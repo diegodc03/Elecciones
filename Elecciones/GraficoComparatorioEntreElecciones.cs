@@ -24,7 +24,7 @@ namespace Elecciones
         }
 
 
-        public void MostrarGrafico(ObservableCollection<ProcesoElectoral> procesos)
+        public void MostrarGrafico(List<ProcesoElectoral> procesos)
         {
 
             double espacioEntreRectangulos = 15;
@@ -95,6 +95,7 @@ namespace Elecciones
 
             //Calcular el ancho total para cada rectangulo y le quitamos el espacio entre los elementos
             double espacioNumPartidosTotal = dicPartidos.Count * contadorDeProceso;
+            var val = canvasGrafica.ActualWidth;
             double anchoTotal = canvasGrafica.ActualWidth - ((espacioNumPartidosTotal+1) * espacioEntreRectangulos);
 
 
@@ -212,7 +213,7 @@ namespace Elecciones
             etiquetaText.Text = nombrePartido;
             etiquetaText.Foreground = Brushes.Black;
             etiquetaText.TextAlignment = TextAlignment.Left;
-            etiquetaText.Width = anchoRectangulo;
+            //etiquetaText.Width = anchoRectangulo;
 
             Canvas.SetLeft(etiquetaText, left);
             Canvas.SetBottom(etiquetaText, bottom - 15);

@@ -39,7 +39,12 @@ namespace Elecciones
         {
             get; 
             set; 
-        } 
+        }
+
+        public ProcesoElectoral()
+        {
+           
+        }
 
         public ProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, ObservableCollection<Partido> partidos)
         {
@@ -69,6 +74,11 @@ namespace Elecciones
             this.nombrePartido = part;
             this.scanios = scani;
             this.color = colorr;
+        }
+
+        public Partido()
+        {
+            
         }
 
 

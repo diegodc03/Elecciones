@@ -18,13 +18,13 @@ namespace Elecciones
 {
     public class ItemEventArgs : EventArgs
     {
-        public ObservableCollection<ProcesoElectoral> procesoElectoral
+        public ProcesoElectoral procesoElectoral
         {
             get;
             set;
         }
 
-        public ItemEventArgs(ObservableCollection<ProcesoElectoral> proceso)
+        public ItemEventArgs(ProcesoElectoral proceso)
         {
             procesoElectoral = proceso;
         }
@@ -48,13 +48,14 @@ namespace Elecciones
         //public event Action<ObservableCollection<ProcesoElectoral>> OnDatosActualizados;
 
 
-        private TipoGrafica tipoGrafica;
+        
 
-        public VentanaSecundaria(TipoGrafica tipo)
+        public VentanaSecundaria(ObservableCollection<ProcesoElectoral> procesos)
         {
             InitializeComponent();
 
-            this.tipoGrafica = tipo;
+            this.procesosElectorales = procesos;
+            DataGridProcesosElectorales.ItemsSource = procesosElectorales;
         }
 
 
@@ -102,36 +103,35 @@ namespace Elecciones
         //Este evento nos permite que dependiendo donde toquemos, tendremos los partidos politicos de cada proceso y solo será ir añadiendo al dataGrid
         private void DataGridProcesosElectorales_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {  
-
-            if(tipoGrafica == TipoGrafica.Unitaria || tipoGrafica == TipoGrafica.Pactometro)
-            {
-                procesosGraficas.Clear();
+            
+            
+          //  if(tipoGrafica == TipoGrafica.Unitaria || tipoGrafica == TipoGrafica.Pactometro || tipoGrafica == TipoGrafica.Pactometro)
+           // {
+               // procesosGraficas.Clear();
                 if(DataGridProcesosElectorales.SelectedItem != null && DataGridProcesosElectorales.SelectedItem is ProcesoElectoral)
                 {
-                    //Tenemos el proceso
-                    procesosGraficas.Add(DataGridProcesosElectorales.SelectedItem as ProcesoElectoral);
-                    ActualizarGrafica(procesosGraficas);
+                //Tenemos el proceso
+                    ProcesoElectoral proceso = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
+                    ActualizarGrafica(proceso);
                     //O hacemos un evento o metodo para llamar
                 }
-            }
+            //}
 
             DataGridPartidosPoliticos.ItemsSource=null;
 
             if (DataGridProcesosElectorales.SelectedItem != null)
             {
-                
                 ProcesoElectoral proceso = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
 
                 if (proceso != null)
-                {
-                     
+                {     
                     partidosPoliticos = proceso.Partidos;
-                    DataGridPartidosPoliticos.ItemsSource = partidosPoliticos;
-                    
+                    DataGridPartidosPoliticos.ItemsSource = partidosPoliticos;   
                 }
             }
         }
 
+        /*
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //Si se cambia y no estamos en la grafica comparativa no cambiamos nada ya que no queremos nada
@@ -145,6 +145,9 @@ namespace Elecciones
                 }
             }
         }
+
+
+
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
@@ -160,6 +163,8 @@ namespace Elecciones
                 }
             }
         }
+        */
+
 
         public event EventHandler<ItemEventArgs> ItemChanged;
 
@@ -171,7 +176,9 @@ namespace Elecciones
             }
         }
 
-        private void ActualizarGrafica(ObservableCollection<ProcesoElectoral> datos)
+
+
+        private void ActualizarGrafica(ProcesoElectoral datos)
         {
             //ItemChanged?.Invoke(this, new ItemEventArgs(datos));
 
@@ -179,9 +186,11 @@ namespace Elecciones
             //Datos es la collection donde he metido los valores para pasar a la ventana prinipal
             if (procesosGraficas != null)
             {
-                OnItemChanged(new ItemEventArgs((ObservableCollection<ProcesoElectoral>)datos));
+                OnItemChanged(new ItemEventArgs((ProcesoElectoral)datos));
             }
         }
+
+
 
 
         private void BotonEliminarEleccion_Click(object sender, RoutedEventArgs e)
@@ -212,7 +221,10 @@ namespace Elecciones
             }
 
         }
-    
 
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Elecciones
         {
 
             double espacioEntreRectangulos = 10;
-            double porcentajeAltura = 0.8;
+            //double porcentajeAltura = 0.8;
 
             //Calcular el ancho total para cada rectangulo y le quitamos el ancho de cada lado
             double anchoTotal = canvasGrafica.ActualWidth - ((proceso.Partidos.Count+1) * espacioEntreRectangulos);

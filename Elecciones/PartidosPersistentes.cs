@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Shapes;
 using System.Xml.Serialization;
+using System.Globalization;
 
 namespace Elecciones
-{
-
-    
-
-
+{ 
     public class PartidosPersistentes
     {
 
@@ -91,6 +91,59 @@ namespace Elecciones
         }
 
     }
+
+
+    public class LecturaDeFicheroProcesosElectorales { 
+    
+        public ObservableCollection<ProcesoElectoral>  leerCSVPartidos(String nombreFich)
+        {
+
+            ObservableCollection<ProcesoElectoral> procesos = new ObservableCollection<ProcesoElectoral>();
+
+            using (StreamReader reader = new StreamReader(nombreFich))
+            {
+                while (!reader.EndOfStream)
+                {
+                    //Lee toda la linea
+                    String linea = reader.ReadLine();
+                    //Dividimos la linea en ','
+                    string[] fila = linea.Split(',');
+                    int cont = 0;
+
+                    ProcesoElectoral proceso = new ProcesoElectoral
+                    {
+                        nombreProcesoElectoral = fila[0],
+                        fechaProcesoElectoral = DateTime.ParseExact(fila[1], "d/M/yyyy", CultureInfo.InvariantCulture),
+                        
+                    };
+
+                    ObservableCollection<Partido> partidos= new ObservableCollection<Partido>();
+
+                    for (int i=2; i<fila.Length; i+=3)
+                    {
+                        Partido partido = new Partido();
+                        partido.nombrePartido = fila[i];
+                        partido.scanios = Int32.Parse(fila[i+1]);
+                        cont = cont + partido.scanios;
+                        partido.color = fila[i+2];
+                        partidos.Add(partido);
+                    }
+                    proceso.Partidos = partidos;
+                    proceso.numeroDeEscanios = cont;
+                    proceso.mayoriaAbsoluta = cont/2+1;
+
+                    procesos.Add(proceso);
+                }
+            }
+
+            return procesos;
+     
+        }
+    }
+
+
+
+
 
 
 }
