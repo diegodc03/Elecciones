@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -35,7 +36,7 @@ namespace Elecciones
         //Instanciamos la ventana secundaria a null
         VentanaSecundaria wsec = null;
 
-     
+        ProcesoElectoral procesoSeleccionado = new ProcesoElectoral();     
 
         GraficoUnitario grafico;
         GraficoComparatorioEntreElecciones graficoComparativo;
@@ -49,11 +50,56 @@ namespace Elecciones
         {
             InitializeComponent();
 
+
+            //Lectura de Fichero con los procesos Electorales
             LecturaDeFicheroProcesosElectorales lectura = new LecturaDeFicheroProcesosElectorales();
             listaProcesos = lectura.leerCSVPartidos("partidosAlPrincipio.csv");
 
 
+            //Me suscribo eventos cambio en el tabItem
+            canvasUnitaria.SizeChanged += canvasUnit_SizeChanged;
+            canvasComparativa.SizeChanged += canvasComp_SizeChanged;
+
         }
+
+
+
+        private void canvasUnit_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (canvasUnitaria.IsEnabled && e.NewSize.Width > 0 && procesoSeleccionado.Partidos != null)
+            {
+                canvasUnitaria.Children.Clear();
+                GraficoUnitario graficoUnitario = new GraficoUnitario(canvasUnitaria);
+                graficoUnitario.MostrarGrafico(procesoSeleccionado);
+                procesoSeleccionado = null;
+            }
+        }
+
+        private void canvasComp_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(canvasComparativa.IsEnabled && e.NewSize.Width > 0 && procesoSeleccionado.Partidos != null)
+            {
+                // Añadimos Grafica Comparatoria a su canvas
+                canvasComparativa.Children.Clear();
+                ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
+                List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
+                aniadirGrafica.Add(p);
+                //Introducimos en una lista todos los valores que sean iguales
+                foreach (ProcesoElectoral proc in listaProcesos)
+                {
+                    if (p.numeroDeEscanios == proc.numeroDeEscanios)
+                    {
+                        aniadirGrafica.Add(proc);
+                    }
+                }
+                GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
+                graficoomp.MostrarGrafico(aniadirGrafica);
+                //procesoSeleccionado = null;
+
+            }
+        }
+
+
         private void listaPartidosPoliticos_SelectionChanger()
         {
             listaProcesos.Clear();
@@ -76,6 +122,10 @@ namespace Elecciones
             
             wsec.Owner = this;
 
+
+
+            
+
             //Nos suscribimos al actualizador de grafica
             wsec.ItemChanged += wsec_actualizarGrafica;
             //wsec.closed = Wsec_closed;
@@ -85,14 +135,21 @@ namespace Elecciones
 
         }
 
-        
+
+
 
         private void wsec_actualizarGrafica(object sender, ItemEventArgs e)
         {
+
+            //Me suscribo un evento para que avise cuando el vanvas esta activo
+            //canvasUnitaria.SizeChanged += metodoSizeChanged;
+
             //ObservableCollection<ProcesoElectoral> procesos = new ObservableCollection<ProcesoElectoral>();
             ProcesoElectoral proceso = new ProcesoElectoral();
             //e devuelve un ObservableCollection<ProcesoElectoral>, donde estan los elementos
             ItemEventArgs procesoDevuelto = e as ItemEventArgs;
+
+            procesoSeleccionado = procesoDevuelto.procesoElectoral;
 
             if(procesoDevuelto != null)
             {
@@ -102,25 +159,33 @@ namespace Elecciones
             if(proceso != null)
             {
                 // Añadimos grafica Unitaria a su canvas
-                canvasUnitaria.Children.Clear();
-                GraficoUnitario graficoUnitario = new GraficoUnitario(canvasUnitaria);
-                graficoUnitario.MostrarGrafico(e.procesoElectoral);
-
-                // Añadimos Grafica Comparatoria a su canvas
-                canvasComparativa.Children.Clear();
-                ProcesoElectoral p = e.procesoElectoral as ProcesoElectoral;
-                List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
-                aniadirGrafica.Add(p);
-                //Introducimos en una lista todos los valores que sean iguales
-                foreach(ProcesoElectoral proc in listaProcesos)
+                if(canvasUnitaria.IsLoaded && canvasUnitaria.ActualWidth > 0)
                 {
-                    if(p.numeroDeEscanios == proc.numeroDeEscanios)
-                    {
-                        aniadirGrafica.Add(proc);
-                    }
+                    canvasUnitaria.Children.Clear();
+                    GraficoUnitario graficoUnitario = new GraficoUnitario(canvasUnitaria);
+                    graficoUnitario.MostrarGrafico(e.procesoElectoral);
                 }
-                GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
-                graficoomp.MostrarGrafico(aniadirGrafica);
+               
+                if(canvasComparativa.IsLoaded && canvasComparativa.ActualWidth > 0)
+                {
+                    // Añadimos Grafica Comparatoria a su canvas
+                    canvasComparativa.Children.Clear();
+                    ProcesoElectoral p = e.procesoElectoral as ProcesoElectoral;
+                    List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
+                    aniadirGrafica.Add(p);
+                    //Introducimos en una lista todos los valores que sean iguales
+                    foreach (ProcesoElectoral proc in listaProcesos)
+                    {
+                        if (p.numeroDeEscanios == proc.numeroDeEscanios)
+                        {
+                            aniadirGrafica.Add(proc);
+                        }
+                    }
+                    GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
+                    graficoomp.MostrarGrafico(aniadirGrafica);
+
+                }
+
 
                 //Añado la grafica de pactometro
             }
@@ -128,7 +193,7 @@ namespace Elecciones
 
         }
 
-        
+        //private void metodoSizeChanged()
 
         private void Wsec_closed(object sender, EventArgs e)
         {

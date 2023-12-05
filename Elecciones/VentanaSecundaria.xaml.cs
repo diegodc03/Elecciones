@@ -31,10 +31,6 @@ namespace Elecciones
     }
 
 
-   
-
-
-
     public partial class VentanaSecundaria : Window
     {
         //Creamos una lista observable, aqui pasamos la lista de la ventana "AgregarProcesoElectoral" consiguiendo tenerla y poder rellanar el DataGrid
@@ -42,7 +38,7 @@ namespace Elecciones
         ObservableCollection<Partido> listaPartidos;
         ObservableCollection<ProcesoElectoral> procesosElectorales = new ObservableCollection<ProcesoElectoral>();
         ObservableCollection<Partido> partidosPoliticos = new ObservableCollection<Partido>();
-        ObservableCollection<ProcesoElectoral> procesosGraficas = new ObservableCollection<ProcesoElectoral> ();
+      
         
         //Evento que salta cuando cambiamos los elementos de la grafica
         //public event Action<ObservableCollection<ProcesoElectoral>> OnDatosActualizados;
@@ -85,16 +81,8 @@ namespace Elecciones
             //Como paso todos los elementos otra vez a la ventanaProcesoElectorral, lo que pasa es que luego al devolverlos, se me pasan todos otra vez, y se añaden todos al dataGrid
             // como no quiero que pase eso, elimino todos los elementos y asi no tengo problema
             
-            
-            
-            //DataGridProcesosElectorales.Items.Clear();
             procesosElectorales = e.ProcesoElectorales;
             DataGridProcesosElectorales.ItemsSource = procesosElectorales;
-            //Actualizamos DataGrid
-            //foreach(ProcesoElectoral proceso in procesosElectorales)
-            //{
-            //    DataGridProcesosElectorales.Items.Add(proceso);
-            //} 
 
         }
 
@@ -184,7 +172,7 @@ namespace Elecciones
 
             //Estamos aqui para pasar a la ventana principal
             //Datos es la collection donde he metido los valores para pasar a la ventana prinipal
-            if (procesosGraficas != null)
+            if (datos != null)
             {
                 OnItemChanged(new ItemEventArgs((ProcesoElectoral)datos));
             }

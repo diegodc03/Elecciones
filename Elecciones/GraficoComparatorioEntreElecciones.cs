@@ -27,7 +27,7 @@ namespace Elecciones
         public void MostrarGrafico(List<ProcesoElectoral> procesos)
         {
 
-            double espacioEntreRectangulos = 15;
+            double espacioEntreRectangulos = 5;
             double maxEscanios = 0;
 
             foreach(ProcesoElectoral proc in procesos)
@@ -146,22 +146,11 @@ namespace Elecciones
                         Console.WriteLine("Espacio en blanco"); // Puedes ajustar esto según tus necesidades
                         left = left + anchoRectangulo + espacioEntreRectangulos;
                     }
-                    
-
                 }
-               
-
             }
-
-
-
-
-
-
-
-
-
         }
+
+        
 
 
         
