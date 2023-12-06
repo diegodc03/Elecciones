@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:Elecciones"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-        SizeChanged="Window_SizeChanged"
+        
         >
+    <!--SizeChanged="Window_SizeChanged"-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -77,7 +78,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Canvas Name="canvasPactometro" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30"></Canvas>
+                    <Canvas Name="canvasPactometro" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30" SizeChanged="canvasPactometro_SizeChanged"></Canvas>
 
 
                 </Grid>

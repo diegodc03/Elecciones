@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,16 +33,12 @@ namespace Elecciones
     {
         //Declaramos una lista ObservableCollection
         ObservableCollection<ProcesoElectoral> listaProcesos = new ObservableCollection<ProcesoElectoral>();
-
+        ProcesoElectoral aux = new ProcesoElectoral();
         //Instanciamos la ventana secundaria a null
         VentanaSecundaria wsec = null;
 
         ProcesoElectoral procesoSeleccionado = new ProcesoElectoral();     
 
-        GraficoUnitario grafico;
-        GraficoComparatorioEntreElecciones graficoComparativo;
-        ProcesoElectoral proceso1;
-        ProcesoElectoral proceso2;
 
 
 
@@ -100,6 +97,18 @@ namespace Elecciones
         }
 
 
+        private void canvasPactometro_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(canvasPactometro.IsEnabled && canvasPactometro.ActualWidth > 0)
+            {
+                canvasPactometro.Children.Clear();
+                ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
+                graficaPactometro(p);
+
+            }
+        }
+
+
         private void listaPartidosPoliticos_SelectionChanger()
         {
             listaProcesos.Clear();
@@ -122,20 +131,21 @@ namespace Elecciones
             
             wsec.Owner = this;
 
-
-
-            
-
             //Nos suscribimos al actualizador de grafica
             wsec.ItemChanged += wsec_actualizarGrafica;
             //wsec.closed = Wsec_closed;
             
             wsec.Title = "Configuración";
+            wsec.Closed += Wsec_Closed;
             wsec.Show();
 
         }
 
-
+         
+        private void Wsec_Closed(Object sender, EventArgs e)
+        {
+            wsec = null;
+        }
 
 
         private void wsec_actualizarGrafica(object sender, ItemEventArgs e)
@@ -186,14 +196,167 @@ namespace Elecciones
 
                 }
 
+                if(canvasPactometro.IsLoaded && canvasPactometro.ActualWidth > 0 )
+                {
+                    //Hacemos la grafica
+                    canvasPactometro.Children.Clear();
+                    //Meto en P el procesoElectral que he pulsado en el DataGrid
+                    ProcesoElectoral p = new ProcesoElectoral();
+                    p = e.procesoElectoral;
 
-                //Añado la grafica de pactometro
+                    graficaPactometro(p);
+
+                    
+
+
+                }
             }
+        }
+
+        private void introducirLinea(double altura)
+        {
+            Polyline polilinea = new Polyline();
+
+            polilinea.Stroke = Brushes.Black;
+            Point[] puntos = new Point[2];
+
+            puntos[0].Y = altura;
+            puntos[0].X = 0;
+            puntos[1].Y = altura;
+            puntos[1].X = canvasPactometro.ActualWidth;
+
+            polilinea.Points = new PointCollection(puntos);
+            canvasPactometro.Children.Add(polilinea);
+        }
+
+
+        private void graficaPactometro(ProcesoElectoral p)
+        {
+            //Declaro Lista partidos izquierda y derecha
+            List<Partido> partidosIzq = new List<Partido>();
+            List<Partido> partidosDer = new List<Partido>();
+            aux = p;
+            //Tengo todos los partidos a la izquierda
+            partidosIzq = p.Partidos.ToList();
+
+
+            //Posicionar lado izquierdo y derecho --> Posicion centrada lado izquiedo y posicion centrada lado derecho
+            double posIzq = ((canvasPactometro.ActualWidth/2)/2);
+            double posDer = (canvasPactometro.ActualWidth / 2) + posIzq;
+
+
+            //Coger Height del Canvas, para calcular
+            double valorHeight = canvasPactometro.ActualHeight-(canvasPactometro.ActualHeight*0.1);
+            double tamanioPorEscanio = valorHeight / p.numeroDeEscanios;
+            double comienzoProxRectangulo = 10;
+            double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
+
+            //Dibujar Linea para si el pacto llega a mayoria absoluta o no
+            double alturaLinea = tamanioPorEscanio * p.mayoriaAbsoluta +20;
+            introducirLinea(alturaLinea);
+
+            foreach(Partido partido in partidosIzq)
+            {
+                //Tamaño de cada rectangulo, lo añadimos
+                double tamanioPartido = tamanioPorEscanio * partido.scanios;
+                agregarRectanguloPact(posIzq, comienzoProxRectangulo, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
+                comienzoProxRectangulo += tamanioPartido;
+            }
+        }
+
+
+
+        private void agregarRectanguloPact(double left, double bottom, double width, double height, string colorHex, int escanios, Partido p, List<Partido> listaIzq, List<Partido> listaDer)
+        {
+
+            Rectangle rectangulo = new System.Windows.Shapes.Rectangle();
+
+            //Asignino un evento a el rectangulo, en el cual, cuando se pulse el click derecho del raton se haga, eso implica que seria como un click
+            rectangulo.MouseLeftButtonDown += (sender, e) => cambiarRectanguloPosicion_Click(sender, e, p, listaIzq, listaDer);
+
+            rectangulo.Width = width;
+            rectangulo.Height = height;
+
+            Color clr = (Color)ColorConverter.ConvertFromString(colorHex);
+            SolidColorBrush brocha = new SolidColorBrush(clr);
+
+            rectangulo.Fill = brocha;
+
+            double movimiento = width / 2;
+            Canvas.SetLeft(rectangulo, left-movimiento);
+
+            Canvas.SetBottom(rectangulo, bottom);
+
+            //Agrego ToolTip al rectangulo para que cuando pase por el van los escaños
+            rectangulo.ToolTip = new ToolTip { Content = escanios + " escaños" };
+
+            canvasPactometro.Children.Add(rectangulo);
 
 
         }
 
-        //private void metodoSizeChanged()
+
+        private void cambiarRectanguloPosicion_Click(Object sender, MouseButtonEventArgs e, Partido p, List<Partido> listaIzq, List<Partido> listaDer)
+        {
+
+            if (listaIzq.Contains(p))
+            {
+                listaIzq.Remove(p);
+                listaDer.Add(p);
+            }
+            else if(listaDer.Contains(p))
+            {
+                listaDer.Remove(p);
+                listaIzq.Add(p);
+            }
+
+            actualizarGraficaPactometro(listaIzq, listaDer);
+
+        }
+
+        private void actualizarGraficaPactometro(List<Partido> partidosIzq, List<Partido> partidosDer)
+        {
+
+            canvasPactometro.Children.Clear();
+
+            //Ordenamos listas para mejor visualización
+            partidosIzq = partidosIzq.OrderByDescending(x => x.scanios).ToList();
+            partidosDer = partidosDer.OrderByDescending(x => x.scanios).ToList();
+
+
+            //Posicionar lado izquierdo y derecho --> Posicion centrada lado izquiedo y posicion centrada lado derecho
+            double posIzq = ((canvasPactometro.ActualWidth / 2) / 2);
+            double posDer = (canvasPactometro.ActualWidth / 2) + posIzq;
+
+            
+
+            //Coger Height del Canvas, para calcular
+            double valorHeight = canvasPactometro.ActualHeight - (canvasPactometro.ActualHeight * 0.1);
+            double tamanioPorEscanio = valorHeight / aux.numeroDeEscanios;
+            double comienzoProxRectanguloIzq = 10;
+            double comienzoProxRectanguloDer = 10;
+            double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
+
+            double altura = tamanioPorEscanio * aux.mayoriaAbsoluta + 20;
+            introducirLinea(altura);
+            foreach (Partido partido in partidosIzq)
+            {
+                //Tamaño de cada rectangulo, lo añadimos
+                double tamanioPartido = tamanioPorEscanio * partido.scanios;
+                agregarRectanguloPact(posIzq, comienzoProxRectanguloIzq, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
+                comienzoProxRectanguloIzq += tamanioPartido;
+            }
+            foreach(Partido partido in partidosDer)
+            {
+                //Tamaño de cada rectangulo, lo añadimos
+                double tamanioPartido = tamanioPorEscanio * partido.scanios;
+                agregarRectanguloPact(posDer, comienzoProxRectanguloDer, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
+                comienzoProxRectanguloDer += tamanioPartido;
+            }
+
+        }
+
+
 
         private void Wsec_closed(object sender, EventArgs e)
         {
@@ -202,8 +365,7 @@ namespace Elecciones
 
 
 
-
-
+        /*
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (grafico != null)
@@ -216,7 +378,7 @@ namespace Elecciones
             {
                 mostarCuadroTamanioMinimo();
             }
-        }
+        }*/
 
         private void mostarCuadroTamanioMinimo()
         {
