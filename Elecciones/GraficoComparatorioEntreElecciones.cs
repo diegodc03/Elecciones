@@ -51,6 +51,8 @@ namespace Elecciones
             //Se ira haciendo mas grande conforme el bucle avance, si es 2 o mayor, si se crea implica que seria uno que no existe
             int escaniosMaximos = 0;
             //Bucle de todos los procesos para meterlos en el diccionario
+            Dictionary<string, string> dicComprobacionColores = new Dictionary<string, string>();
+
             foreach(ProcesoElectoral proceso in procesos)
             {
                 contadorDeProceso = contadorDeProceso + 1;
@@ -60,6 +62,17 @@ namespace Elecciones
                 //Recorremos todos los valores de la lista metiendolos en el diccionario
                 foreach(Partido partido in listaPartidosPoliticos)
                 {
+                    if (dicComprobacionColores.ContainsKey(partido.nombrePartido) == true)
+                    {
+                        string color = dicComprobacionColores[partido.nombrePartido];
+                        partido.color = color;
+                    }
+                    else
+                    {
+                        dicComprobacionColores.Add(partido.nombrePartido, partido.color);
+
+                    }
+                    //////////
                     if (dicPartidos.ContainsKey(partido.nombrePartido))
                     {
                         // La clave existe en el diccionario
@@ -70,6 +83,7 @@ namespace Elecciones
                         {
                             escaniosMaximos = partido.scanios;
                         }
+                        
                         dicPartidos[partido.nombrePartido].Add(partido);
                     }
                     else
@@ -212,12 +226,12 @@ namespace Elecciones
                 double val = 1-(numProceso * factorConversion);
                 //val = Math.Max(val, 0.1);
 
-                byte nuevoRojo = (byte)(clr.R * val);
-                byte nuevoVerde = (byte)(clr.G * val);
-                byte nuevoAzul = (byte)(clr.B * val);
+                int alphaValue = 255 - (int)(val * 120);
+                alphaValue = Math.Max(0, Math.Min(255, alphaValue)); // Limitar entre 0 y 255
 
+                clr = Color.FromArgb((byte)alphaValue, clr.R, clr.G, clr.B);
                 //Creo un nuevo color, este tendra la intensidad reducida dependiendo el numero de proceso que tenga
-                clr = (Color)Color.FromRgb(nuevoRojo, nuevoVerde, nuevoAzul);
+                //clr = (Color)Color.FromArgb((byte(255 - (int)(val * 255))), clr.R, clr.G, clr.B);
             }
             
 

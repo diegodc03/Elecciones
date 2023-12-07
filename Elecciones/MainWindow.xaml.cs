@@ -37,8 +37,12 @@ namespace Elecciones
         //Instanciamos la ventana secundaria a null
         VentanaSecundaria wsec = null;
 
-        ProcesoElectoral procesoSeleccionado = new ProcesoElectoral();     
+        ProcesoElectoral procesoSeleccionado = new ProcesoElectoral();
+        int comp = 1;
 
+        //Lista partidos divididios en dos para la grafica pactometro
+        List<Partido> partidosIzq = new List<Partido>();
+        List<Partido> partidosDer = new List<Partido>();
 
 
 
@@ -120,17 +124,25 @@ namespace Elecciones
         {
             if(canvasPactometro.IsEnabled && canvasPactometro.ActualWidth > 0 )
             {
-                if (canvasPactometro.ActualHeight > 175 && canvasPactometro.ActualWidth > 225)
+                if (canvasPactometro.ActualHeight > 175 && canvasPactometro.ActualWidth > 225 )
                 {
-
-                    canvasPactometro.Children.Clear();
-                    ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
-                    if (p.Partidos != null)
+                    if(partidosDer.Count() == 0 && partidosIzq.Count() == 0)
                     {
-                        graficaPactometro(p);
+                        //Esto ocurre la primera vez que lo llame
+                        canvasPactometro.Children.Clear();
+                        ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
+                        if (p.Partidos != null)
+                        {
+                            graficaPactometro(p);
+                        }		
+
                     }
-                    textoMayoria2.Text = procesoSeleccionado.numeroDeEscanios.ToString() + " / " + procesoSeleccionado.mayoriaAbsoluta.ToString();
-                    textoMayoria.Text = "";
+                    else
+                    {
+                        //Cuando lo vuelva a llamar se que o una lista u otra o las dos tendran partiudos, por lo que quiero es que se vuelvan a escribir
+                        actualizarGraficaPactometro(partidosIzq, partidosDer);
+                    }
+                    
                 }
                 else
                 {
@@ -182,7 +194,7 @@ namespace Elecciones
 
         private void wsec_actualizarGrafica(object sender, ItemEventArgs e)
         {
-
+            comp = 1; 
             //Me suscribo un evento para que avise cuando el vanvas esta activo
             //canvasUnitaria.SizeChanged += metodoSizeChanged;
 
@@ -238,15 +250,16 @@ namespace Elecciones
                 {
                     //Hacemos la grafica
                     canvasPactometro.Children.Clear();
+                    partidosIzq = new List<Partido>();
+                    partidosDer = new List<Partido>();
+                    comp = 1;
                     //Meto en P el procesoElectral que he pulsado en el DataGrid
                     ProcesoElectoral p = new ProcesoElectoral();
                     p = e.procesoElectoral;
 
                     graficaPactometro(p);
                     
-                    
-                    textoMayoria2.Text = p.numeroDeEscanios.ToString() + " / " + p.mayoriaAbsoluta.ToString();
-
+                                        
                 }
             }
         }
@@ -272,36 +285,83 @@ namespace Elecciones
 
         private void graficaPactometro(ProcesoElectoral p)
         {
-            //Declaro Lista partidos izquierda y derecha
-            List<Partido> partidosIzq = new List<Partido>();
-            List<Partido> partidosDer = new List<Partido>();
-            aux = p;
-            //Tengo todos los partidos a la izquierda
+                      
             partidosIzq = p.Partidos.ToList();
-
-
-            //Posicionar lado izquierdo y derecho --> Posicion centrada lado izquiedo y posicion centrada lado derecho
-            double posIzq = ((canvasPactometro.ActualWidth/2)/2);
-            double posDer = (canvasPactometro.ActualWidth / 2) + posIzq;
-
-
-            //Coger Height del Canvas, para calcular
-            double valorHeight = canvasPactometro.ActualHeight-(canvasPactometro.ActualHeight*0.1);
-            double tamanioPorEscanio = valorHeight / p.numeroDeEscanios;
-            double comienzoProxRectangulo = canvasPactometro.ActualHeight*0.05;
-            double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
-
-            //Dibujar Linea para si el pacto llega a mayoria absoluta o no
-            double alturaLinea = tamanioPorEscanio * (p.mayoriaAbsoluta-1) + canvasPactometro.ActualHeight*0.05;
-            introducirLinea(alturaLinea);
-
-            foreach(Partido partido in partidosIzq)
+            
+            //Compruebo si acabo de pulsar, ya que deberé poner si hay el partido con mayoria absoluta a la derecha
+            if (comp == 1)
             {
-                //Tamaño de cada rectangulo, lo añadimos
-                double tamanioPartido = tamanioPorEscanio * partido.scanios;
-                agregarRectanguloPact(posIzq, comienzoProxRectangulo, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
-                comienzoProxRectangulo += tamanioPartido;
+                Partido mayoria = partidosIzq[0];
+                if(mayoria != null && mayoria.scanios >= p.mayoriaAbsoluta)
+                {
+                    partidosIzq.Remove(mayoria);
+                    partidosDer.Add(mayoria);
+                }
+                
             }
+
+            //Añadimos como está
+            double contEscanios=0;
+            if(partidosDer.Count() != 0)
+            {
+                  foreach (Partido partido in partidosDer)
+                 {
+                     contEscanios = contEscanios + partido.scanios;
+                 }
+                  textoMayoria.Text = contEscanios.ToString() + " / " + procesoSeleccionado.mayoriaAbsoluta.ToString();
+            }
+
+            if (partidosIzq.Count() != 0)
+            {
+                contEscanios = 0;
+                foreach (Partido partido in partidosIzq)
+                {
+                    contEscanios = contEscanios + partido.scanios;
+                }
+
+                textoMayoria.Text = contEscanios.ToString() + " / " + p.mayoriaAbsoluta.ToString();
+            }
+
+         /*
+         //Posicionar lado izquierdo y derecho --> Posicion centrada lado izquiedo y posicion centrada lado derecho
+         double posIzq = ((canvasPactometro.ActualWidth/2)/2);
+         double posDer = (canvasPactometro.ActualWidth / 2) + posIzq;
+
+
+         //Coger Height del Canvas, para calcular
+         double valorHeight = canvasPactometro.ActualHeight-(canvasPactometro.ActualHeight*0.1);
+         double tamanioPorEscanio = valorHeight / p.numeroDeEscanios;
+         double comienzoProxRectangulo = canvasPactometro.ActualHeight*0.05;
+         double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
+
+         //Dibujar Linea para si el pacto llega a mayoria absoluta o no
+         double alturaLinea = tamanioPorEscanio * (p.mayoriaAbsoluta-1) + canvasPactometro.ActualHeight*0.05;
+         introducirLinea(alturaLinea);
+         double tamanioPartido;
+         */
+
+            //foreach (Partido partido in partidosIzq)
+            //{
+            //Tamaño de cada rectangulo, lo añadimos
+            //tamanioPartido = tamanioPorEscanio * partido.scanios;
+            //agregarRectanguloPact(posIzq, comienzoProxRectangulo, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
+            //comienzoProxRectangulo += tamanioPartido;
+
+            /*
+            if(partidosDer != null)
+            {
+                comienzoProxRectangulo = canvasPactometro.ActualHeight * 0.05;
+                foreach (Partido partido in partidosDer)
+                {
+                    tamanioPartido = tamanioPorEscanio * partido.scanios;
+                    agregarRectanguloPact(posDer, comienzoProxRectangulo, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
+                    comienzoProxRectangulo += tamanioPartido;
+            }
+
+            }*/
+
+
+            actualizarGraficaPactometro(partidosIzq, partidosDer);
         }
 
 
@@ -367,14 +427,24 @@ namespace Elecciones
 
         }
 
+
         private void actualizarGraficaPactometro(List<Partido> partidosIzq, List<Partido> partidosDer)
         {
 
             canvasPactometro.Children.Clear();
 
             //Ordenamos listas para mejor visualización
-            partidosIzq = partidosIzq.OrderByDescending(x => x.scanios).ToList();
-            partidosDer = partidosDer.OrderByDescending(x => x.scanios).ToList();
+            if(partidosIzq.Count() > 0)
+            {
+                partidosIzq = partidosIzq.OrderByDescending(x => x.scanios).ToList();
+            }
+            
+            if(partidosDer.Count() > 0)
+            {
+                partidosDer = partidosDer.OrderByDescending(x => x.scanios).ToList();
+            }
+
+           
 
 
             //Posicionar lado izquierdo y derecho --> Posicion centrada lado izquiedo y posicion centrada lado derecho
@@ -385,7 +455,7 @@ namespace Elecciones
 
             //Coger Height del Canvas, para calcular
             double valorHeight = canvasPactometro.ActualHeight - (canvasPactometro.ActualHeight * 0.1);
-            double tamanioPorEscanio = valorHeight / aux.numeroDeEscanios;
+            double tamanioPorEscanio = valorHeight / procesoSeleccionado.numeroDeEscanios;
             double comienzoProxRectanguloIzq = canvasPactometro.ActualHeight * 0.05;
             double comienzoProxRectanguloDer = canvasPactometro.ActualHeight * 0.05;
             double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
@@ -393,24 +463,33 @@ namespace Elecciones
             //Dibujar Linea para si el pacto llega a mayoria absoluta o no
             //Esto se hace pq en vez que de empezar por arriba las lineas, se empiezan por arriba, lo que hace que, si quiero empezar por abajo, tenga que poner la altura con la mayoria absoluta - 1, ya que en la parte de arriba, habra 40
             // y en la parte de abajo 41, que  es lo que exactamente quiero
-            double alturaLinea = tamanioPorEscanio * aux.mayoriaAbsoluta-1 + canvasPactometro.ActualHeight * 0.05; 
+            double alturaLinea = tamanioPorEscanio * procesoSeleccionado.mayoriaAbsoluta-1 + canvasPactometro.ActualHeight * 0.05; 
             introducirLinea(alturaLinea);
-
-            foreach (Partido partido in partidosIzq)
+            if(partidosIzq != null)
+            {
+                foreach (Partido partido in partidosIzq)
             {
                 //Tamaño de cada rectangulo, lo añadimos
                 double tamanioPartido = tamanioPorEscanio * partido.scanios;
                 agregarRectanguloPact(posIzq, comienzoProxRectanguloIzq, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
                 comienzoProxRectanguloIzq += tamanioPartido;
             }
-            foreach(Partido partido in partidosDer)
+            }
+            if(partidosDer.Count() > 0)
             {
-                //Tamaño de cada rectangulo, lo añadimos
-                double tamanioPartido = tamanioPorEscanio * partido.scanios;
-                agregarRectanguloPact(posDer, comienzoProxRectanguloDer, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
-                comienzoProxRectanguloDer += tamanioPartido;
+                foreach (Partido partido in partidosDer)
+                {
+                    //Tamaño de cada rectangulo, lo añadimos
+                    double tamanioPartido = tamanioPorEscanio * partido.scanios;
+                    agregarRectanguloPact(posDer, comienzoProxRectanguloDer, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
+                    comienzoProxRectanguloDer += tamanioPartido;
+                }
             }
 
+            this.partidosDer = partidosDer;
+            this.partidosIzq = partidosIzq;
+
+            comp = 0;
         }
 
 
