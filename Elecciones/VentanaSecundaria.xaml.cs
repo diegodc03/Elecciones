@@ -35,7 +35,7 @@ namespace Elecciones
     {
         //Creamos una lista observable, aqui pasamos la lista de la ventana "AgregarProcesoElectoral" consiguiendo tenerla y poder rellanar el DataGrid
         //public ObservableCollection<ProcesoElectoral> listaProcesoElectoral { get; } = new ObservableCollection<ProcesoElectoral>();
-        ObservableCollection<Partido> listaPartidos;
+        
         ObservableCollection<ProcesoElectoral> procesosElectorales = new ObservableCollection<ProcesoElectoral>();
         ObservableCollection<Partido> partidosPoliticos = new ObservableCollection<Partido>();
       
@@ -119,41 +119,7 @@ namespace Elecciones
             }
         }
 
-        /*
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            //Si se cambia y no estamos en la grafica comparativa no cambiamos nada ya que no queremos nada
-            if(tipoGrafica == TipoGrafica.Comparatoria)
-            {
-                var checkBox = sender as CheckBox; 
-                ProcesoElectoral proc = checkBox.DataContext as ProcesoElectoral;
-                if (!procesosGraficas.Contains(proc)) {
-                    procesosGraficas.Add(proc);
-                    ActualizarGrafica(procesosGraficas);
-                }
-            }
-        }
-
-
-
-
-        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //Si se cambia y no estamos en la grafica comparativa no cambiamos nada ya que no queremos nada
-            if (tipoGrafica == TipoGrafica.Comparatoria)
-            {
-                var checkBox = sender as CheckBox;
-                ProcesoElectoral proc = checkBox.DataContext as ProcesoElectoral;
-                if (procesosGraficas.Contains(proc))
-                {
-                    procesosGraficas.Remove(proc);
-                    ActualizarGrafica(procesosGraficas);
-                }
-            }
-        }
-        */
-
-
+      
         public event EventHandler<ItemEventArgs> ItemChanged;
 
         public void OnItemChanged(ItemEventArgs e)
@@ -213,6 +179,16 @@ namespace Elecciones
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void SecondWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (segundaVentana.ActualWidth < 550 || segundaVentana.ActualHeight < 350)
+            {
+                String mensajePorPantalla = "No se puede hacer tan pequeño";
+                MessageBox.Show(mensajePorPantalla);
+            }
+            
         }
     }
 }

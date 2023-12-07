@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Elecciones"
         mc:Ignorable="d"
-        Title="VentanaSecundaria" Height="450" Width="800">
+        Title="VentanaSecundaria" Height="450" Width="800"
+        SizeChanged="SecondWindow_SizeChanged" Name="segundaVentana">
     <!-- Aqui ponemos toda la funcionalidad, y asi es como se verá en la aplicacion la ventana secundaria -->
     <Grid>
         <Grid.RowDefinitions>

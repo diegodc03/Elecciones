@@ -106,13 +106,17 @@ namespace Elecciones
             nombreEleccion.Text = proceso.nombreProcesoElectoral;
             NumEscaniosTotal.Text = proceso.numeroDeEscanios.ToString();
             MayoriaAbsoluta.Text = proceso.mayoriaAbsoluta.ToString();
-
+            
+            partidos.Clear();
             partidos = proceso.Partidos;
+
+            DataGridPartidos.ItemsSource = partidos;
             foreach(Partido partido in partidos)
             {
-                DataGridPartidos.Items.Add(partido);
                 sumatorioNumeroEscanios = sumatorioNumeroEscanios + partido.scanios;
             }
+            
+            
 
 
 
@@ -140,10 +144,6 @@ namespace Elecciones
             int numScanios;
             int escaniosPartidosComprobante;
             
-
-           
-
-
 
 
             string numeroScaniosTotal = NumEscaniosTotal.Text;
@@ -299,6 +299,7 @@ namespace Elecciones
             string nombreProceso = nombreEleccion.Text;
             string mayoriaAbsoluta = MayoriaAbsoluta.Text;
             string numeroDeEscaniosTotal = NumEscaniosTotal.Text;
+            
             DateTime fechaSeleccionada;
             
             int mayoriaEscanios;
@@ -342,6 +343,19 @@ namespace Elecciones
                         if(modificacionProceso == 0)
                         {
                             listaProcesosElectorales.Add(procesoNuevo);
+                            List<ProcesoElectoral> aux = new List<ProcesoElectoral>();
+                            List<ProcesoElectoral> ordenada = new List<ProcesoElectoral>();
+                            //Creo nueva lista para ordenar los datos
+                            aux = listaProcesosElectorales.ToList<ProcesoElectoral>();
+                            ordenada = aux.OrderByDescending(x => x.fechaProcesoElectoral).ToList();
+
+                            listaProcesosElectorales.Clear();
+                            foreach(ProcesoElectoral p in ordenada)
+                            {
+                                listaProcesosElectorales.Add(p);
+                            }
+
+
                         }
                         else
                         {
@@ -441,7 +455,7 @@ namespace Elecciones
                 //Añadimos otra vez todo correctamente sin el elemento seleccionado
                 //foreach (Partido part in partidos)
                 //{
-                    DataGridPartidos.ItemsSource = partidos;
+                DataGridPartidos.ItemsSource = partidos;
                 
 
 
@@ -455,17 +469,24 @@ namespace Elecciones
             if(partidoSeleccionado != null)
             {
                 PartidoComboBox.Text = partidoSeleccionado.nombrePartido;
+                PartidoComboBox.IsEnabled = false;
                 NumEscaniosPartido.Text = partidoSeleccionado.scanios.ToString();
                 ColoresComboBox.Text = partidoSeleccionado.color;
 
                 modificacionPartidos = 1;
 
             }
-
-
-
         }
 
+        
 
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(ventana.ActualWidth < 550 || ventana.ActualHeight < 350)
+            {
+                String mensajePorPantalla = "No se puede hacer tan pequeño";
+                MessageBox.Show(mensajePorPantalla);
+            }
+        }
     }
 }

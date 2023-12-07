@@ -53,9 +53,6 @@ namespace Elecciones
             listaProcesos = lectura.leerCSVPartidos("partidosAlPrincipio.csv");
 
 
-            //Me suscribo eventos cambio en el tabItem
-            canvasUnitaria.SizeChanged += canvasUnit_SizeChanged;
-            canvasComparativa.SizeChanged += canvasComp_SizeChanged;
 
         }
 
@@ -65,10 +62,19 @@ namespace Elecciones
         {
             if (canvasUnitaria.IsEnabled && e.NewSize.Width > 0 && procesoSeleccionado.Partidos != null)
             {
-                canvasUnitaria.Children.Clear();
-                GraficoUnitario graficoUnitario = new GraficoUnitario(canvasUnitaria);
-                graficoUnitario.MostrarGrafico(procesoSeleccionado);
-                procesoSeleccionado = null;
+                if (canvasUnitaria.ActualHeight > 175 || canvasUnitaria.ActualWidth > 225)
+                {
+                    canvasUnitaria.Children.Clear();
+                    GraficoUnitario graficoUnitario = new GraficoUnitario(canvasUnitaria);
+                    graficoUnitario.MostrarGrafico(procesoSeleccionado);
+                    //procesoSeleccionado = null;
+                }
+                else
+                {
+                    String mensajePorPantalla = "No se puede hacer tan pequeño";
+                    MessageBox.Show(mensajePorPantalla);
+                }
+
             }
         }
 
@@ -76,22 +82,35 @@ namespace Elecciones
         {
             if(canvasComparativa.IsEnabled && e.NewSize.Width > 0 && procesoSeleccionado.Partidos != null)
             {
-                // Añadimos Grafica Comparatoria a su canvas
-                canvasComparativa.Children.Clear();
-                ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
-                List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
-                aniadirGrafica.Add(p);
-                //Introducimos en una lista todos los valores que sean iguales
-                foreach (ProcesoElectoral proc in listaProcesos)
+                if(canvasComparativa.ActualHeight > 175 && canvasComparativa.ActualWidth > 225)
                 {
-                    if (p.numeroDeEscanios == proc.numeroDeEscanios)
+                    // Añadimos Grafica Comparatoria a su canvas
+                    canvasComparativa.Children.Clear();
+
+                    ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
+
+                    List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
+                    aniadirGrafica.Add(p);
+
+                    //Introducimos en una lista todos los valores que sean iguales
+                    foreach (ProcesoElectoral proc in listaProcesos)
                     {
-                        aniadirGrafica.Add(proc);
+                        if (p.numeroDeEscanios == proc.numeroDeEscanios && p.fechaProcesoElectoral != proc.fechaProcesoElectoral)
+                        {
+                            aniadirGrafica.Add(proc);
+                        }
                     }
+
+                    GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
+                    graficoomp.MostrarGrafico(aniadirGrafica);
                 }
-                GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
-                graficoomp.MostrarGrafico(aniadirGrafica);
-                //procesoSeleccionado = null;
+                else
+                {
+                    String mensajePorPantalla = "No se puede hacer tan pequeño";
+                    MessageBox.Show(mensajePorPantalla);
+                }
+                
+                
 
             }
         }
@@ -99,12 +118,25 @@ namespace Elecciones
 
         private void canvasPactometro_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(canvasPactometro.IsEnabled && canvasPactometro.ActualWidth > 0)
+            if(canvasPactometro.IsEnabled && canvasPactometro.ActualWidth > 0 )
             {
-                canvasPactometro.Children.Clear();
-                ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
-                graficaPactometro(p);
+                if (canvasPactometro.ActualHeight > 175 && canvasPactometro.ActualWidth > 225)
+                {
 
+                    canvasPactometro.Children.Clear();
+                    ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
+                    if (p.Partidos != null)
+                    {
+                        graficaPactometro(p);
+                    }
+                    textoMayoria2.Text = procesoSeleccionado.numeroDeEscanios.ToString() + " / " + procesoSeleccionado.mayoriaAbsoluta.ToString();
+                    textoMayoria.Text = "";
+                }
+                else
+                {
+                    String mensajePorPantalla = "No se puede hacer tan pequeño";
+                    MessageBox.Show(mensajePorPantalla);
+                }
             }
         }
 
@@ -176,27 +208,33 @@ namespace Elecciones
                     graficoUnitario.MostrarGrafico(e.procesoElectoral);
                 }
                
+
                 if(canvasComparativa.IsLoaded && canvasComparativa.ActualWidth > 0)
                 {
                     // Añadimos Grafica Comparatoria a su canvas
                     canvasComparativa.Children.Clear();
+                    
                     ProcesoElectoral p = e.procesoElectoral as ProcesoElectoral;
+                    
                     List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
                     aniadirGrafica.Add(p);
+
                     //Introducimos en una lista todos los valores que sean iguales
                     foreach (ProcesoElectoral proc in listaProcesos)
                     {
-                        if (p.numeroDeEscanios == proc.numeroDeEscanios)
+                        if (p.numeroDeEscanios == proc.numeroDeEscanios && p.fechaProcesoElectoral != proc.fechaProcesoElectoral)
                         {
                             aniadirGrafica.Add(proc);
                         }
                     }
+
                     GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
                     graficoomp.MostrarGrafico(aniadirGrafica);
 
                 }
 
-                if(canvasPactometro.IsLoaded && canvasPactometro.ActualWidth > 0 )
+
+                if(canvasPactometro.IsLoaded && canvasPactometro.ActualWidth > 0 && e.procesoElectoral.Partidos != null)
                 {
                     //Hacemos la grafica
                     canvasPactometro.Children.Clear();
@@ -205,9 +243,9 @@ namespace Elecciones
                     p = e.procesoElectoral;
 
                     graficaPactometro(p);
-
                     
-
+                    
+                    textoMayoria2.Text = p.numeroDeEscanios.ToString() + " / " + p.mayoriaAbsoluta.ToString();
 
                 }
             }
@@ -219,6 +257,8 @@ namespace Elecciones
 
             polilinea.Stroke = Brushes.Black;
             Point[] puntos = new Point[2];
+
+            
 
             puntos[0].Y = altura;
             puntos[0].X = 0;
@@ -248,11 +288,11 @@ namespace Elecciones
             //Coger Height del Canvas, para calcular
             double valorHeight = canvasPactometro.ActualHeight-(canvasPactometro.ActualHeight*0.1);
             double tamanioPorEscanio = valorHeight / p.numeroDeEscanios;
-            double comienzoProxRectangulo = 10;
+            double comienzoProxRectangulo = canvasPactometro.ActualHeight*0.05;
             double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
 
             //Dibujar Linea para si el pacto llega a mayoria absoluta o no
-            double alturaLinea = tamanioPorEscanio * p.mayoriaAbsoluta +20;
+            double alturaLinea = tamanioPorEscanio * (p.mayoriaAbsoluta-1) + canvasPactometro.ActualHeight*0.05;
             introducirLinea(alturaLinea);
 
             foreach(Partido partido in partidosIzq)
@@ -298,7 +338,7 @@ namespace Elecciones
 
         private void cambiarRectanguloPosicion_Click(Object sender, MouseButtonEventArgs e, Partido p, List<Partido> listaIzq, List<Partido> listaDer)
         {
-
+            int contEscanios=0;
             if (listaIzq.Contains(p))
             {
                 listaIzq.Remove(p);
@@ -310,6 +350,19 @@ namespace Elecciones
                 listaIzq.Add(p);
             }
 
+            //Contamos escaños de la lista derecha y lo ponemos en el textBlock
+            foreach(Partido partido in listaDer)
+            {
+                contEscanios = contEscanios + partido.scanios;
+            }
+            textoMayoria.Text = contEscanios.ToString() + " / " + procesoSeleccionado.mayoriaAbsoluta.ToString();
+            contEscanios = 0;
+            foreach (Partido partido in listaIzq)
+            {
+                contEscanios = contEscanios + partido.scanios;
+            }
+
+            textoMayoria2.Text = contEscanios.ToString() + " / " + procesoSeleccionado.mayoriaAbsoluta.ToString();
             actualizarGraficaPactometro(listaIzq, listaDer);
 
         }
@@ -333,12 +386,16 @@ namespace Elecciones
             //Coger Height del Canvas, para calcular
             double valorHeight = canvasPactometro.ActualHeight - (canvasPactometro.ActualHeight * 0.1);
             double tamanioPorEscanio = valorHeight / aux.numeroDeEscanios;
-            double comienzoProxRectanguloIzq = 10;
-            double comienzoProxRectanguloDer = 10;
+            double comienzoProxRectanguloIzq = canvasPactometro.ActualHeight * 0.05;
+            double comienzoProxRectanguloDer = canvasPactometro.ActualHeight * 0.05;
             double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
+            
+            //Dibujar Linea para si el pacto llega a mayoria absoluta o no
+            //Esto se hace pq en vez que de empezar por arriba las lineas, se empiezan por arriba, lo que hace que, si quiero empezar por abajo, tenga que poner la altura con la mayoria absoluta - 1, ya que en la parte de arriba, habra 40
+            // y en la parte de abajo 41, que  es lo que exactamente quiero
+            double alturaLinea = tamanioPorEscanio * aux.mayoriaAbsoluta-1 + canvasPactometro.ActualHeight * 0.05; 
+            introducirLinea(alturaLinea);
 
-            double altura = tamanioPorEscanio * aux.mayoriaAbsoluta + 20;
-            introducirLinea(altura);
             foreach (Partido partido in partidosIzq)
             {
                 //Tamaño de cada rectangulo, lo añadimos
@@ -365,21 +422,7 @@ namespace Elecciones
 
 
 
-        /*
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (grafico != null)
-            {
-                canvasUnitaria.Children.Clear();
-                grafico.MostrarGrafico(proceso1);
-            }
-
-            if (e.NewSize.Width < 500 || e.NewSize.Height <300)
-            {
-                mostarCuadroTamanioMinimo();
-            }
-        }*/
-
+        
         private void mostarCuadroTamanioMinimo()
         {
 
@@ -391,14 +434,6 @@ namespace Elecciones
 
             MessageBox.Show(msg, titulo, boton, imagen);
         }
-
-
-
-
-
-
-
-        // Metodos creacion de gráficas
 
 
 

@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Elecciones"
         mc:Ignorable="d"
-        Title="AgregarProcesoElectoral" Height="450" Width="800">
+        Title="AgregarProcesoElectoral" Height="450" Width="800"
+        SizeChanged="Window_SizeChanged" Name="ventana">
 
 
 
@@ -13,14 +14,14 @@
 
     <TabControl TabStripPlacement="Top">
         <TabItem Header="Proceso Electotal" Height="Auto" Width="Auto">
-            <Grid Margin="20">
+            <Grid  Margin="20">
 
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
-                    <RowDefinition/>
+                    
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -33,31 +34,31 @@
                 </Label>
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="10" >
-                    <TextBlock Grid.Row="0" Text="Nombre de la Elección:" Margin="10"/>
-                    <TextBox x:Name="nombreEleccion" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200" HorizontalAlignment="Left" />
+                    <TextBlock Grid.Row="0" Text="Nombre de la Elección:" Margin="10" HorizontalAlignment="Center"/>
+                    <TextBox x:Name="nombreEleccion" Grid.Row="0"  Margin="15 0 10 10"  Width="200" HorizontalAlignment="Center" />
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="1"  Margin="10" VerticalAlignment="Center" >
-                    <DatePicker x:Name="FechaEleccion" Margin="15" Text="Selecciona una Fecha" Width="200" HorizontalAlignment="Left"/>
+                    <DatePicker x:Name="FechaEleccion" Margin="15" Text="Selecciona una Fecha" Width="200" HorizontalAlignment="Center"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" >
-                    <TextBlock Grid.Row="0" Text="Numero de Escaños Total:" Margin="10"/>
-                    <TextBox x:Name="NumEscaniosTotal" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200" HorizontalAlignment="Left" TextChanged="NumEscaniosTotal_TextChanged"/>
+                    <TextBlock Grid.Row="0" Text="Numero de Escaños Total:" Margin="10" HorizontalAlignment="Center"/>
+                    <TextBox x:Name="NumEscaniosTotal" Grid.Row="0"  Margin="15 0 10 10"  Width="200" HorizontalAlignment="Center" TextChanged="NumEscaniosTotal_TextChanged"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="0" Margin="10" >
-                    <TextBlock Grid.Row="0" Text="Mayoría Absoluta:" Margin="10"/>
-                    <TextBox x:Name="MayoriaAbsoluta" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="200"  HorizontalAlignment="Left" IsReadOnly="True"/>
+                    <TextBlock Grid.Row="0" Text="Mayoría Absoluta:" Margin="10" HorizontalAlignment="Center"/>
+                    <TextBox x:Name="MayoriaAbsoluta" Grid.Row="0"  Margin="15 0 10 10"  Width="200" Background="Gray" HorizontalAlignment="Center" IsReadOnly="True"/>
                 </StackPanel>
 
-                <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="10">
+                <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
                     <Button Margin="10" Width="150" Height="50" Click="AniadirProcesoElectoral_Click" HorizontalAlignment="Center" VerticalAlignment="Center" >
                         <Label >Añadir Proceso Electoral</Label>
                     </Button>
                 </StackPanel>
 
-                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="10">
+                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
                     <Button Margin="10" Width="150" Height="50" Click="Salir_Click" HorizontalAlignment="Center" VerticalAlignment="Center" >
                         <Label >Guardar Y Salir</Label>
                     </Button>
@@ -98,13 +99,15 @@
 
                     <StackPanel Margin="10,10,10,10" Grid.ColumnSpan="3" >
                         <TextBlock Grid.Row="0" Text="Introduce Numero de Escaños del Partido:" Margin="10"/>
-                        <TextBox x:Name="NumEscaniosPartido" Grid.Row="0"  Margin="15 0 10 10" Background="CadetBlue" Width="250" HorizontalAlignment="Left"/>
+                        <TextBox x:Name="NumEscaniosPartido" Grid.Row="0"  Margin="15 0 10 10"  Width="250" HorizontalAlignment="Left"/>
                     </StackPanel>
 
                     <StackPanel Margin="10,10,10,10" Grid.ColumnSpan="3" >
                         <TextBlock Grid.Row="0" Text="Introduce Color :" Margin="10"/>
+                        
                         <ScrollViewer VerticalScrollBarVisibility="Auto" >
-                            <ComboBox x:Name="ColoresComboBox" DisplayMemberPath="" IsEditable="True" Width="250" HorizontalAlignment="Left" Margin="15 00 00 00" IsReadOnly="True" Text="Introduce un color..."/>
+                            <ComboBox x:Name="ColoresComboBox" DisplayMemberPath="" IsEditable="True" Width="250" HorizontalAlignment="Left" Margin="15 00 00 00" IsReadOnly="True"   Text="Introduce un color..."/>
+
                         </ScrollViewer>
                     </StackPanel>
 

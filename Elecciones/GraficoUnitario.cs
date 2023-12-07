@@ -23,23 +23,24 @@ namespace Elecciones
         public void MostrarGrafico(ProcesoElectoral proceso)
         {
 
-            double espacioEntreRectangulos = 10;
+            double espacioEntreRectangulos = canvasGrafica.ActualWidth * 0.02;
             //double porcentajeAltura = 0.8;
 
             //Calcular el ancho total para cada rectangulo y le quitamos el ancho de cada lado
-            double anchoTotal = canvasGrafica.ActualWidth - ((proceso.Partidos.Count+1) * espacioEntreRectangulos);
+            double anchoTotal = canvasGrafica.ActualWidth - ((proceso.Partidos.Count+1) * espacioEntreRectangulos + 15);
 
             //Tamaño para cada rectangulo
             double anchoRectangulo = anchoTotal / proceso.Partidos.Count;
 
             // Encontrar la cantidad máxima de escaños entre los partidos
             double maxEscanios = proceso.Partidos.Max(p => p.scanios);
-            
-            double maxAltura = maxEscanios + 30;
+            double maxAltura = maxEscanios + maxEscanios * 0.25;
+
+           // double maxAltura = canvasGrafica.ActualHeight + canvasGrafica.ActualHeight*0.01;
 
             //Dejamos espacio entre el canvas para hacerlo mas "bonito"
             //Donde lo vamos a colocar en el canvas
-            double leftInicio = espacioEntreRectangulos;
+            double leftInicio = espacioEntreRectangulos + 15;
             double left = leftInicio;
             double bottom = 30;
 
@@ -88,15 +89,7 @@ namespace Elecciones
                     texto.FontSize = factorEscala * texto.FontSize;
                     canvasGrafica.Children.Add(texto);
                 }
-
-                
-
             }
-
-
-
-
-
         }
 
         private void agregarRectangulo(double left, double bottom, double width, double height, string colorHex, string etiqueta, int escanios)
@@ -137,11 +130,6 @@ namespace Elecciones
             Canvas.SetBottom(etiquetaText, bottom - 15);
 
             canvasGrafica.Children.Add(etiquetaText);
-
         }
-
-        
-
-
     }
 }

@@ -79,7 +79,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Canvas Name="canvasPactometro" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30" SizeChanged="canvasPactometro_SizeChanged"></Canvas>
-
+                    <TextBlock Name="textoMayoria" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="Auto" Width="Auto"></TextBlock>
+                    <TextBlock Name="textoMayoria2" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="Auto" Width="Auto"></TextBlock>
 
                 </Grid>
             </TabItem>
