@@ -23,9 +23,9 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Margin="5" Click="BotonCrearEleccion_Click">Crear Elección</Button>
-            <Button Grid.Column="1" Margin="5" Click="BotonEliminarEleccion_Click" >Eliminar Elección</Button>
-            <Button Grid.Column="2" Margin="5" Click="BotonEditarEleccion_Click" >Editar Elección</Button>
+            <Button Grid.Column="0" Margin="20 20 5 5" Click="BotonCrearEleccion_Click">Crear Elección</Button>
+            <Button Grid.Column="1" Margin="5 20 5 5" Click="BotonEliminarEleccion_Click" >Eliminar Elección</Button>
+            <Button Grid.Column="2" Margin="5 20 20 5" Click="BotonEditarEleccion_Click" >Editar Elección</Button>
 
         </Grid>
 
@@ -34,14 +34,14 @@
 
         <DataGrid Name="DataGridProcesosElectorales" SelectionMode="Single" AutoGenerateColumns="False" Margin="20" Grid.Row="1"  SelectionChanged="DataGridProcesosElectorales_SelectionChanged"  ItemsSource="{Binding procesosElectorales}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="PROCESO ELECTORAL" Width="170" Binding="{Binding nombreProcesoElectoral}">
+                <DataGridTextColumn Header="PROCESO ELECTORAL" Width="200" Binding="{Binding nombreProcesoElectoral}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center" />
                         </Style>
                     </DataGridTextColumn.HeaderStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="FECHA" Width="170" Binding="{Binding fechaProcesoElectoral}">
+                <DataGridTextColumn Header="FECHA" Width="170" Binding="{Binding fechaProcesoElectoral, StringFormat='dd/MM/yyyy'}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter  Property="HorizontalContentAlignment" Value="Center"/>
@@ -68,7 +68,7 @@
 
         <DataGrid Name="DataGridPartidosPoliticos" SelectionMode="Single" AutoGenerateColumns="False" Margin="20" Grid.Row="2" ItemsSource="{Binding partidosPoliticos}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="PARTIDO" Width="100" Binding="{Binding nombrePartido}">
+                <DataGridTextColumn Header="PARTIDO" Width="150" Binding="{Binding nombrePartido}">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter  Property="HorizontalContentAlignment" Value="Center" />

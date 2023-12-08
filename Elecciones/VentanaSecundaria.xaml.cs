@@ -170,8 +170,9 @@ namespace Elecciones
             ProcesoElectoral procesoElectoralSeleccionado = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
             if(procesoElectoralSeleccionado != null)
             {
-                AgregarProcesoElectoral agregar = new AgregarProcesoElectoral(procesoElectoralSeleccionado);
+                AgregarProcesoElectoral agregar = new AgregarProcesoElectoral(procesoElectoralSeleccionado, procesosElectorales);
                 agregar.Show();
+                
             }
 
         }

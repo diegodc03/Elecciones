@@ -252,6 +252,10 @@ namespace Elecciones
                     canvasPactometro.Children.Clear();
                     partidosIzq = new List<Partido>();
                     partidosDer = new List<Partido>();
+
+                    textoMayoria2.Text = "";
+                    textoMayoria.Text = "";
+
                     comp = 1;
                     //Meto en P el procesoElectral que he pulsado en el DataGrid
                     ProcesoElectoral p = new ProcesoElectoral();
@@ -319,47 +323,8 @@ namespace Elecciones
                     contEscanios = contEscanios + partido.scanios;
                 }
 
-                textoMayoria.Text = contEscanios.ToString() + " / " + p.mayoriaAbsoluta.ToString();
+                textoMayoria2.Text = contEscanios.ToString() + " / " + p.mayoriaAbsoluta.ToString();
             }
-
-         /*
-         //Posicionar lado izquierdo y derecho --> Posicion centrada lado izquiedo y posicion centrada lado derecho
-         double posIzq = ((canvasPactometro.ActualWidth/2)/2);
-         double posDer = (canvasPactometro.ActualWidth / 2) + posIzq;
-
-
-         //Coger Height del Canvas, para calcular
-         double valorHeight = canvasPactometro.ActualHeight-(canvasPactometro.ActualHeight*0.1);
-         double tamanioPorEscanio = valorHeight / p.numeroDeEscanios;
-         double comienzoProxRectangulo = canvasPactometro.ActualHeight*0.05;
-         double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
-
-         //Dibujar Linea para si el pacto llega a mayoria absoluta o no
-         double alturaLinea = tamanioPorEscanio * (p.mayoriaAbsoluta-1) + canvasPactometro.ActualHeight*0.05;
-         introducirLinea(alturaLinea);
-         double tamanioPartido;
-         */
-
-            //foreach (Partido partido in partidosIzq)
-            //{
-            //Tamaño de cada rectangulo, lo añadimos
-            //tamanioPartido = tamanioPorEscanio * partido.scanios;
-            //agregarRectanguloPact(posIzq, comienzoProxRectangulo, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
-            //comienzoProxRectangulo += tamanioPartido;
-
-            /*
-            if(partidosDer != null)
-            {
-                comienzoProxRectangulo = canvasPactometro.ActualHeight * 0.05;
-                foreach (Partido partido in partidosDer)
-                {
-                    tamanioPartido = tamanioPorEscanio * partido.scanios;
-                    agregarRectanguloPact(posDer, comienzoProxRectangulo, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
-                    comienzoProxRectangulo += tamanioPartido;
-            }
-
-            }*/
-
 
             actualizarGraficaPactometro(partidosIzq, partidosDer);
         }
@@ -513,10 +478,5 @@ namespace Elecciones
 
             MessageBox.Show(msg, titulo, boton, imagen);
         }
-
-
-
-
-
     }
 }

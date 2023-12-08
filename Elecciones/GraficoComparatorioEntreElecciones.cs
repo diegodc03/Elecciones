@@ -211,7 +211,6 @@ namespace Elecciones
 
         private void agregarRectangulo(double left, double bottom, double width, double height, string colorHex, string etiqueta, int escanios, int numProceso, int contNumProcesos)
         {
-            double factorConversion = 0.15;
             Rectangle rectangulo = new System.Windows.Shapes.Rectangle();
 
             rectangulo.Width = width;
@@ -222,14 +221,13 @@ namespace Elecciones
             //Como es 0 el numero de proceso 1 y no se tiene que cambiar, da igual
             if (numProceso >= 1)
             {
-                //Si el procesoElectoral es mayor
-                double val = 1-(numProceso * factorConversion);
-                //val = Math.Max(val, 0.1);
+                double factorDeReduccion = 0.2; // Este factor determina cuánto se reduce la opacidad por cada proceso
+                double val = 1.0 - (numProceso * factorDeReduccion);
+                
+                int alphaValor = 255 - (int)(val * 120);
+                alphaValor = Math.Max(0, Math.Min(255, alphaValor)); // Limitar entre 0 y 255
 
-                int alphaValue = 255 - (int)(val * 120);
-                alphaValue = Math.Max(0, Math.Min(255, alphaValue)); // Limitar entre 0 y 255
-
-                clr = Color.FromArgb((byte)alphaValue, clr.R, clr.G, clr.B);
+                clr = Color.FromArgb((byte)alphaValor, clr.R, clr.G, clr.B);
                 //Creo un nuevo color, este tendra la intensidad reducida dependiendo el numero de proceso que tenga
                 //clr = (Color)Color.FromArgb((byte(255 - (int)(val * 255))), clr.R, clr.G, clr.B);
             }
