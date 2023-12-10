@@ -22,8 +22,6 @@ using System.Windows.Shapes;
 
 namespace Elecciones
 {
-      
-
     public partial class MainWindow : Window
     {
         ObservableCollection<ProcesoElectoral> listaProcesos = new ObservableCollection<ProcesoElectoral>();
@@ -82,27 +80,29 @@ namespace Elecciones
                 {
                     if(flagEliminado == 0)
                     {
-                        // Añadimos Grafica Comparatoria a su canvas
                         canvasComparativa.Children.Clear();
-
+                        NombreProcesosComparativos.Children.Clear();
                         ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
 
                         List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
                         aniadirGrafica.Add(p);
+                        introducirEnTextComp(p,1);
+
                         NombreEleccionLabelGraficComparativo.Text = p.nombreProcesoElectoral;
                         //Introducimos en una lista todos los valores que sean iguales
+                        int i = 2;
                         foreach (ProcesoElectoral proc in listaProcesos)
                         {
                             if (p.numeroDeEscanios == proc.numeroDeEscanios && p.fechaProcesoElectoral != proc.fechaProcesoElectoral)
                             {
                                 aniadirGrafica.Add(proc);
+                                introducirEnTextComp(proc,i);
+                                i = i + 1;
                             }
                         }
-
                         GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
                         graficoomp.MostrarGrafico(aniadirGrafica);
                     }
-                   
                 }
                 else
                 {
@@ -150,6 +150,12 @@ namespace Elecciones
             }
         }
 
+        private void introducirEnTextComp(ProcesoElectoral proc, int i)
+        {
+            var TextBlock = new TextBlock();
+            TextBlock.Text =i+"º "+ proc.nombreProcesoElectoral.ToString();
+            NombreProcesosComparativos.Children.Add(TextBlock);
+        }
 
 
         private void MenuConfig_Click(object sender, EventArgs e)
@@ -192,6 +198,7 @@ namespace Elecciones
             NombreEleccionLabelGraficaUnitaria.Text = "";
             NombreEleccionLabelGraficComparativo.Text = "";
             NombreEleccionLabelGraficaPactometro.Text = "";
+            NombreProcesosComparativos.Children.Clear();
         }
 
 
@@ -200,7 +207,6 @@ namespace Elecciones
         {
             wsec = null;
         }
-
 
         private void Wsec_actualizarGrafica(object sender, ItemEventArgs e)
         {
@@ -237,17 +243,21 @@ namespace Elecciones
                 {
                     // Añadimos Grafica Comparatoria a su canvas
                     canvasComparativa.Children.Clear();
-                    
+                    NombreProcesosComparativos.Children.Clear();
+
                     ProcesoElectoral p = e.procesoElectoral as ProcesoElectoral;
                     List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
                     aniadirGrafica.Add(p);
-
+                    introducirEnTextComp(p,1);
+                    int i = 2;
                     //Introducimos en una lista todos los valores que sean iguales
                     foreach (ProcesoElectoral proc in listaProcesos)
                     {
                         if (p.numeroDeEscanios == proc.numeroDeEscanios && p.fechaProcesoElectoral != proc.fechaProcesoElectoral)
                         {
                             aniadirGrafica.Add(proc);
+                            introducirEnTextComp(proc, i);
+                            i = i + 1;
                         }
                     }
 

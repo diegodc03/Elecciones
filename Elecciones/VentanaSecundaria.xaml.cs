@@ -45,6 +45,7 @@ namespace Elecciones
             LimpiarCanvas?.Invoke(this, EventArgs.Empty);
         }
 
+       
 
         public VentanaSecundaria(ObservableCollection<ProcesoElectoral> procesos)
         {
@@ -142,7 +143,6 @@ namespace Elecciones
             BotonEditar.IsEnabled = false;
             BotonEliminar.IsEnabled = false;
             BotonCrear.IsEnabled = false;
-
 
             ProcesoElectoral procesoElectoralSeleccionado = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
             if(procesoElectoralSeleccionado != null)

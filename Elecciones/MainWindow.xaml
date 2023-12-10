@@ -66,11 +66,12 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Canvas x:Name="canvasComparativa" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30"  SizeChanged="CanvasComp_SizeChanged">
-                        <Canvas x:Name="CanvasTextoComparativo" >
-                            
-                        </Canvas>
+                        
                     </Canvas>
 
+                    <StackPanel Name="NombreProcesosComparativos" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
+                        
+                    </StackPanel>
 
                     <TextBlock x:Name="NombreEleccionLabelGraficComparativo" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20"  ></TextBlock>
                     

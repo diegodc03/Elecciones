@@ -25,9 +25,7 @@ namespace Elecciones
     public partial class AgregarProcesoElectoral : Window
     {
 
-        //Declaro evento 
-        //public event EventHandler<ProcesosElectoralesEventArgs> ProcesosElectoralesActualizados;
-
+       
         ObservableCollection<Partido> partidos = new ObservableCollection<Partido>();
         ObservableCollection<ProcesoElectoral> listaProcesosElectorales;
 
@@ -148,7 +146,7 @@ namespace Elecciones
 
         }
 
-
+        
         private void AniadirPartidoPolitico_Click(object sender, RoutedEventArgs e)
         {
             String nombrePartido = PartidoComboBox.Text;
@@ -287,6 +285,7 @@ namespace Elecciones
                 }               
             }
         }
+
 
         private void AniadirProcesoElectoral_Click(object sender, RoutedEventArgs e)
         {

@@ -124,29 +124,28 @@ namespace Elecciones
                     {
                         // La clave existe en el diccionario
                         //Añado a la lista del diccionario
-                        
+
                         partido.numProceso = contadorDeProceso;
                         if (escaniosMaximos < partido.scanios)
                         {
                             escaniosMaximos = partido.scanios;
                         }
-                        
+
                         dicPartidos[partido.nombrePartido].Add(partido);
                     }
                     else
                     {
                         //La clave no está en el diccionario
                         //Creo una nueva clave en el diccionario
-                        
+
                         partido.numProceso = contadorDeProceso;
                         if (escaniosMaximos < partido.scanios)
                         {
                             escaniosMaximos = partido.scanios;
                         }
                         dicPartidos.Add(partido.nombrePartido, new List<Partido> { partido });
-                    }   
+                    }
                 }
-
             }
             
             double maxAltura = maxEscanios + maxEscanios * 0.25;
@@ -194,7 +193,7 @@ namespace Elecciones
                     }
                     else
                     {
-                        //Console.WriteLine("Espacio en blanco"); 
+                       
                         left = left + anchoRectangulo + espacioEntreRectangulos;
                     }
 

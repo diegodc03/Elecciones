@@ -25,8 +25,6 @@ namespace Elecciones
 
         }
 
-      
-        
         public List<String> getPartidos()
         {
             return listaPartidosPoliticos;
