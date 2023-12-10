@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Elecciones"
         mc:Ignorable="d"
         Title="VentanaSecundaria" Height="450" Width="800"
-        SizeChanged="SecondWindow_SizeChanged" Name="segundaVentana">
+        Name="segundaVentana" SizeChanged="SecondWindow_SizeChanged">
     <!-- Aqui ponemos toda la funcionalidad, y asi es como se verá en la aplicacion la ventana secundaria -->
     <Grid>
         <Grid.RowDefinitions>
@@ -23,9 +23,9 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Margin="20 20 5 5" Click="BotonCrearEleccion_Click">Crear Elección</Button>
-            <Button Grid.Column="1" Margin="5 20 5 5" Click="BotonEliminarEleccion_Click" >Eliminar Elección</Button>
-            <Button Grid.Column="2" Margin="5 20 20 5" Click="BotonEditarEleccion_Click" >Editar Elección</Button>
+            <Button x:Name="BotonCrear" Grid.Column="0" Margin="20 20 5 5" Click="BotonCrearEleccion_Click">Crear Elección</Button>
+            <Button x:Name="BotonEliminar" Grid.Column="1" Margin="5 20 5 5" Click="BotonEliminarEleccion_Click" >Eliminar Elección</Button>
+            <Button x:Name="BotonEditar" Grid.Column="2" Margin="5 20 20 5" Click="BotonEditarEleccion_Click" >Editar Elección</Button>
 
         </Grid>
 

@@ -22,56 +22,48 @@ using System.Windows.Shapes;
 
 namespace Elecciones
 {
-    /// <summary>
-    /// Lógica de interacción para MainWindow.xaml
-    /// </summary>
-    /// 
-
-    
+      
 
     public partial class MainWindow : Window
     {
-        //Declaramos una lista ObservableCollection
         ObservableCollection<ProcesoElectoral> listaProcesos = new ObservableCollection<ProcesoElectoral>();
         ProcesoElectoral aux = new ProcesoElectoral();
-        //Instanciamos la ventana secundaria a null
+
         VentanaSecundaria wsec = null;
 
         ProcesoElectoral procesoSeleccionado = new ProcesoElectoral();
         int comp = 1;
+        int flagEliminado = 0;
 
         //Lista partidos divididios en dos para la grafica pactometro
         List<Partido> partidosIzq = new List<Partido>();
         List<Partido> partidosDer = new List<Partido>();
 
 
-
-
         public MainWindow()
         {
             InitializeComponent();
 
-
             //Lectura de Fichero con los procesos Electorales
             LecturaDeFicheroProcesosElectorales lectura = new LecturaDeFicheroProcesosElectorales();
-            listaProcesos = lectura.leerCSVPartidos("partidosAlPrincipio.csv");
-
-
+            listaProcesos = lectura.leerCSProcesos("partidosAlPrincipio.csv");
 
         }
 
 
-
-        private void canvasUnit_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void CanvasUnit_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (canvasUnitaria.IsEnabled && e.NewSize.Width > 0 && procesoSeleccionado.Partidos != null)
             {
-                if (canvasUnitaria.ActualHeight > 175 || canvasUnitaria.ActualWidth > 225)
+                if (canvasUnitaria.ActualHeight > 200 && canvasUnitaria.ActualWidth > 300)
                 {
-                    canvasUnitaria.Children.Clear();
-                    GraficoUnitario graficoUnitario = new GraficoUnitario(canvasUnitaria);
-                    graficoUnitario.MostrarGrafico(procesoSeleccionado);
-                    //procesoSeleccionado = null;
+                    if(flagEliminado == 0)
+                    {
+                        canvasUnitaria.Children.Clear();
+                        GraficoUnitario graficoUnitario = new GraficoUnitario(canvasUnitaria);
+                        NombreEleccionLabelGraficaUnitaria.Text = procesoSeleccionado.nombreProcesoElectoral;
+                        graficoUnitario.MostrarGrafico(procesoSeleccionado);
+                    }
                 }
                 else
                 {
@@ -82,31 +74,35 @@ namespace Elecciones
             }
         }
 
-        private void canvasComp_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void CanvasComp_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if(canvasComparativa.IsEnabled && e.NewSize.Width > 0 && procesoSeleccionado.Partidos != null)
             {
-                if(canvasComparativa.ActualHeight > 175 && canvasComparativa.ActualWidth > 225)
+                if(canvasComparativa.ActualHeight > 200 && canvasComparativa.ActualWidth > 300)
                 {
-                    // Añadimos Grafica Comparatoria a su canvas
-                    canvasComparativa.Children.Clear();
-
-                    ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
-
-                    List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
-                    aniadirGrafica.Add(p);
-
-                    //Introducimos en una lista todos los valores que sean iguales
-                    foreach (ProcesoElectoral proc in listaProcesos)
+                    if(flagEliminado == 0)
                     {
-                        if (p.numeroDeEscanios == proc.numeroDeEscanios && p.fechaProcesoElectoral != proc.fechaProcesoElectoral)
-                        {
-                            aniadirGrafica.Add(proc);
-                        }
-                    }
+                        // Añadimos Grafica Comparatoria a su canvas
+                        canvasComparativa.Children.Clear();
 
-                    GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
-                    graficoomp.MostrarGrafico(aniadirGrafica);
+                        ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
+
+                        List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
+                        aniadirGrafica.Add(p);
+                        NombreEleccionLabelGraficComparativo.Text = p.nombreProcesoElectoral;
+                        //Introducimos en una lista todos los valores que sean iguales
+                        foreach (ProcesoElectoral proc in listaProcesos)
+                        {
+                            if (p.numeroDeEscanios == proc.numeroDeEscanios && p.fechaProcesoElectoral != proc.fechaProcesoElectoral)
+                            {
+                                aniadirGrafica.Add(proc);
+                            }
+                        }
+
+                        GraficoComparatorioEntreElecciones graficoomp = new GraficoComparatorioEntreElecciones(canvasComparativa);
+                        graficoomp.MostrarGrafico(aniadirGrafica);
+                    }
+                   
                 }
                 else
                 {
@@ -120,29 +116,31 @@ namespace Elecciones
         }
 
 
-        private void canvasPactometro_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void CanvasPactometro_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if(canvasPactometro.IsEnabled && canvasPactometro.ActualWidth > 0 )
             {
-                if (canvasPactometro.ActualHeight > 175 && canvasPactometro.ActualWidth > 225 )
+                if (canvasPactometro.ActualHeight > 250 && canvasPactometro.ActualWidth > 300 )
                 {
                     if(partidosDer.Count() == 0 && partidosIzq.Count() == 0)
                     {
-                        //Esto ocurre la primera vez que lo llame
-                        canvasPactometro.Children.Clear();
-                        ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
-                        if (p.Partidos != null)
+                        if(flagEliminado == 0)
                         {
-                            graficaPactometro(p);
-                        }		
-
+                            //Esto ocurre la primera vez que lo llame
+                            canvasPactometro.Children.Clear();
+                            ProcesoElectoral p = procesoSeleccionado as ProcesoElectoral;
+                            NombreEleccionLabelGraficaPactometro.Text = procesoSeleccionado.nombreProcesoElectoral;
+                            if (p.Partidos != null)
+                            {
+                                GraficaPactometro(p);
+                            }
+                        }	
                     }
                     else
                     {
                         //Cuando lo vuelva a llamar se que o una lista u otra o las dos tendran partiudos, por lo que quiero es que se vuelvan a escribir
-                        actualizarGraficaPactometro(partidosIzq, partidosDer);
+                        ActualizarGraficaPactometro(partidosIzq, partidosDer);
                     }
-                    
                 }
                 else
                 {
@@ -150,12 +148,6 @@ namespace Elecciones
                     MessageBox.Show(mensajePorPantalla);
                 }
             }
-        }
-
-
-        private void listaPartidosPoliticos_SelectionChanger()
-        {
-            listaProcesos.Clear();
         }
 
 
@@ -164,7 +156,8 @@ namespace Elecciones
         {   
             if(wsec == null)
             {
-                wsec = new VentanaSecundaria(this.listaProcesos);
+                if(listaProcesos != null)
+                    wsec = new VentanaSecundaria(this.listaProcesos);
             }
             
             if(listaProcesos != null)
@@ -176,14 +169,31 @@ namespace Elecciones
             wsec.Owner = this;
 
             //Nos suscribimos al actualizador de grafica
-            wsec.ItemChanged += wsec_actualizarGrafica;
-            //wsec.closed = Wsec_closed;
+            wsec.ItemChanged += Wsec_actualizarGrafica;
+            //Nos suscribimos al limpiador de canvas
+            wsec.LimpiarCanvas += limpiarCanvas;
+           
             
             wsec.Title = "Configuración";
             wsec.Closed += Wsec_Closed;
             wsec.Show();
 
         }
+
+
+        private void limpiarCanvas(object sender, EventArgs e)
+        {
+            flagEliminado = 1;
+            canvasComparativa.Children.Clear();
+            canvasPactometro.Children.Clear();
+            canvasUnitaria.Children.Clear();
+            textoMayoria.Text = " ";
+            textoMayoria2.Text = " ";
+            NombreEleccionLabelGraficaUnitaria.Text = "";
+            NombreEleccionLabelGraficComparativo.Text = "";
+            NombreEleccionLabelGraficaPactometro.Text = "";
+        }
+
 
          
         private void Wsec_Closed(Object sender, EventArgs e)
@@ -192,15 +202,13 @@ namespace Elecciones
         }
 
 
-        private void wsec_actualizarGrafica(object sender, ItemEventArgs e)
+        private void Wsec_actualizarGrafica(object sender, ItemEventArgs e)
         {
-            comp = 1; 
-            //Me suscribo un evento para que avise cuando el vanvas esta activo
-            //canvasUnitaria.SizeChanged += metodoSizeChanged;
+            comp = 1;
+            flagEliminado = 0;
 
-            //ObservableCollection<ProcesoElectoral> procesos = new ObservableCollection<ProcesoElectoral>();
             ProcesoElectoral proceso = new ProcesoElectoral();
-            //e devuelve un ObservableCollection<ProcesoElectoral>, donde estan los elementos
+
             ItemEventArgs procesoDevuelto = e as ItemEventArgs;
 
             procesoSeleccionado = procesoDevuelto.procesoElectoral;
@@ -210,24 +218,27 @@ namespace Elecciones
                proceso = procesoDevuelto.procesoElectoral;
             }
 
-            if(proceso != null)
+            NombreEleccionLabelGraficaUnitaria.Text = e.procesoElectoral.nombreProcesoElectoral;
+            NombreEleccionLabelGraficComparativo.Text = e.procesoElectoral.nombreProcesoElectoral;
+            NombreEleccionLabelGraficaPactometro.Text = e.procesoElectoral.nombreProcesoElectoral;
+
+            if (proceso != null)
             {
                 // Añadimos grafica Unitaria a su canvas
-                if(canvasUnitaria.IsLoaded && canvasUnitaria.ActualWidth > 0)
+                if(canvasUnitaria.ActualWidth > 0)
                 {
                     canvasUnitaria.Children.Clear();
                     GraficoUnitario graficoUnitario = new GraficoUnitario(canvasUnitaria);
                     graficoUnitario.MostrarGrafico(e.procesoElectoral);
+                    
                 }
-               
 
-                if(canvasComparativa.IsLoaded && canvasComparativa.ActualWidth > 0)
+                if( canvasComparativa.ActualWidth > 0)
                 {
                     // Añadimos Grafica Comparatoria a su canvas
                     canvasComparativa.Children.Clear();
                     
                     ProcesoElectoral p = e.procesoElectoral as ProcesoElectoral;
-                    
                     List<ProcesoElectoral> aniadirGrafica = new List<ProcesoElectoral>();
                     aniadirGrafica.Add(p);
 
@@ -246,10 +257,11 @@ namespace Elecciones
                 }
 
 
-                if(canvasPactometro.IsLoaded && canvasPactometro.ActualWidth > 0 && e.procesoElectoral.Partidos != null)
+                if( canvasPactometro.ActualWidth > 0 && e.procesoElectoral.Partidos != null)
                 {
                     //Hacemos la grafica
                     canvasPactometro.Children.Clear();
+
                     partidosIzq = new List<Partido>();
                     partidosDer = new List<Partido>();
 
@@ -257,37 +269,17 @@ namespace Elecciones
                     textoMayoria.Text = "";
 
                     comp = 1;
-                    //Meto en P el procesoElectral que he pulsado en el DataGrid
                     ProcesoElectoral p = new ProcesoElectoral();
                     p = e.procesoElectoral;
 
-                    graficaPactometro(p);
+                    GraficaPactometro(p);
                     
                                         
                 }
             }
         }
 
-        private void introducirLinea(double altura)
-        {
-            Polyline polilinea = new Polyline();
-
-            polilinea.Stroke = Brushes.Black;
-            Point[] puntos = new Point[2];
-
-            
-
-            puntos[0].Y = altura;
-            puntos[0].X = 0;
-            puntos[1].Y = altura;
-            puntos[1].X = canvasPactometro.ActualWidth;
-
-            polilinea.Points = new PointCollection(puntos);
-            canvasPactometro.Children.Add(polilinea);
-        }
-
-
-        private void graficaPactometro(ProcesoElectoral p)
+        private void GraficaPactometro(ProcesoElectoral p)
         {
                       
             partidosIzq = p.Partidos.ToList();
@@ -326,23 +318,81 @@ namespace Elecciones
                 textoMayoria2.Text = contEscanios.ToString() + " / " + p.mayoriaAbsoluta.ToString();
             }
 
-            actualizarGraficaPactometro(partidosIzq, partidosDer);
+            ActualizarGraficaPactometro(partidosIzq, partidosDer);
         }
 
 
+        private void ActualizarGraficaPactometro(List<Partido> partidosIzq, List<Partido> partidosDer)
+        {
 
-        private void agregarRectanguloPact(double left, double bottom, double width, double height, string colorHex, int escanios, Partido p, List<Partido> listaIzq, List<Partido> listaDer)
+            canvasPactometro.Children.Clear();
+
+            //Ordenamos listas para mejor visualización
+            if(partidosIzq.Count() > 0)
+            {
+                partidosIzq = partidosIzq.OrderByDescending(x => x.scanios).ToList();
+            }
+            
+            if(partidosDer.Count() > 0)
+            {
+                partidosDer = partidosDer.OrderByDescending(x => x.scanios).ToList();
+            }
+
+            double posIzq = ((canvasPactometro.ActualWidth / 2) / 2);
+            double posDer = (canvasPactometro.ActualWidth / 2) + posIzq;
+
+
+            double valorHeight = canvasPactometro.ActualHeight - (canvasPactometro.ActualHeight * 0.1);
+            double tamanioPorEscanio = valorHeight / procesoSeleccionado.numeroDeEscanios;
+            double comienzoProxRectanguloIzq = canvasPactometro.ActualHeight * 0.05;
+            double comienzoProxRectanguloDer = canvasPactometro.ActualHeight * 0.05;
+            double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
+            
+            
+            double alturaLinea = tamanioPorEscanio * procesoSeleccionado.mayoriaAbsoluta-1 + canvasPactometro.ActualHeight * 0.05; 
+            IntroducirLinea(alturaLinea);
+
+
+            if(partidosIzq != null)
+            {
+                foreach (Partido partido in partidosIzq)
+            {
+                //Tamaño de cada rectangulo, lo añadimos
+                double tamanioPartido = tamanioPorEscanio * partido.scanios;
+                AgregarRectanguloPact(posIzq, comienzoProxRectanguloIzq, anchoRectangulo, tamanioPartido, partido, partidosIzq, partidosDer);
+                comienzoProxRectanguloIzq += tamanioPartido;
+            }
+            }
+            if(partidosDer.Count() > 0)
+            {
+                foreach (Partido partido in partidosDer)
+                {
+                    //Tamaño de cada rectangulo, lo añadimos
+                    double tamanioPartido = tamanioPorEscanio * partido.scanios;
+                    AgregarRectanguloPact(posDer, comienzoProxRectanguloDer, anchoRectangulo, tamanioPartido, partido, partidosIzq, partidosDer);
+                    comienzoProxRectanguloDer += tamanioPartido;
+                }
+            }
+
+            this.partidosDer = partidosDer;
+            this.partidosIzq = partidosIzq;
+
+            comp = 0;
+        }
+
+
+        private void AgregarRectanguloPact(double left, double bottom, double width, double height,  Partido p, List<Partido> listaIzq, List<Partido> listaDer)
         {
 
             Rectangle rectangulo = new System.Windows.Shapes.Rectangle();
 
-            //Asignino un evento a el rectangulo, en el cual, cuando se pulse el click derecho del raton se haga, eso implica que seria como un click
-            rectangulo.MouseLeftButtonDown += (sender, e) => cambiarRectanguloPosicion_Click(sender, e, p, listaIzq, listaDer);
+            //Asigno un evento a el rectangulo, en el cual, cuando se pulse el click derecho del raton se haga, eso implica que seria como un click
+            rectangulo.MouseLeftButtonDown += (sender, e) => CambiarRectanguloPosicion_Click(sender, e, p, listaIzq, listaDer);
 
             rectangulo.Width = width;
             rectangulo.Height = height;
 
-            Color clr = (Color)ColorConverter.ConvertFromString(colorHex);
+            Color clr = (Color)ColorConverter.ConvertFromString(p.color);
             SolidColorBrush brocha = new SolidColorBrush(clr);
 
             rectangulo.Fill = brocha;
@@ -353,15 +403,33 @@ namespace Elecciones
             Canvas.SetBottom(rectangulo, bottom);
 
             //Agrego ToolTip al rectangulo para que cuando pase por el van los escaños
-            rectangulo.ToolTip = new ToolTip { Content = escanios + " escaños" };
+            rectangulo.ToolTip = new ToolTip { Content =p.nombrePartido+" "+ p.scanios + " escaños" };
 
             canvasPactometro.Children.Add(rectangulo);
 
 
         }
 
+        private void IntroducirLinea(double altura)
+        {
+            Polyline polilinea = new Polyline();
 
-        private void cambiarRectanguloPosicion_Click(Object sender, MouseButtonEventArgs e, Partido p, List<Partido> listaIzq, List<Partido> listaDer)
+            polilinea.Stroke = Brushes.Black;
+            Point[] puntos = new Point[2];
+
+
+
+            puntos[0].Y = altura;
+            puntos[0].X = 0;
+            puntos[1].Y = altura;
+            puntos[1].X = canvasPactometro.ActualWidth;
+
+            polilinea.Points = new PointCollection(puntos);
+            canvasPactometro.Children.Add(polilinea);
+        }
+
+
+        private void CambiarRectanguloPosicion_Click(Object sender, MouseButtonEventArgs e, Partido p, List<Partido> listaIzq, List<Partido> listaDer)
         {
             int contEscanios=0;
             if (listaIzq.Contains(p))
@@ -388,95 +456,11 @@ namespace Elecciones
             }
 
             textoMayoria2.Text = contEscanios.ToString() + " / " + procesoSeleccionado.mayoriaAbsoluta.ToString();
-            actualizarGraficaPactometro(listaIzq, listaDer);
+            ActualizarGraficaPactometro(listaIzq, listaDer);
 
         }
 
 
-        private void actualizarGraficaPactometro(List<Partido> partidosIzq, List<Partido> partidosDer)
-        {
 
-            canvasPactometro.Children.Clear();
-
-            //Ordenamos listas para mejor visualización
-            if(partidosIzq.Count() > 0)
-            {
-                partidosIzq = partidosIzq.OrderByDescending(x => x.scanios).ToList();
-            }
-            
-            if(partidosDer.Count() > 0)
-            {
-                partidosDer = partidosDer.OrderByDescending(x => x.scanios).ToList();
-            }
-
-           
-
-
-            //Posicionar lado izquierdo y derecho --> Posicion centrada lado izquiedo y posicion centrada lado derecho
-            double posIzq = ((canvasPactometro.ActualWidth / 2) / 2);
-            double posDer = (canvasPactometro.ActualWidth / 2) + posIzq;
-
-            
-
-            //Coger Height del Canvas, para calcular
-            double valorHeight = canvasPactometro.ActualHeight - (canvasPactometro.ActualHeight * 0.1);
-            double tamanioPorEscanio = valorHeight / procesoSeleccionado.numeroDeEscanios;
-            double comienzoProxRectanguloIzq = canvasPactometro.ActualHeight * 0.05;
-            double comienzoProxRectanguloDer = canvasPactometro.ActualHeight * 0.05;
-            double anchoRectangulo = canvasPactometro.ActualWidth * 0.25;
-            
-            //Dibujar Linea para si el pacto llega a mayoria absoluta o no
-            //Esto se hace pq en vez que de empezar por arriba las lineas, se empiezan por arriba, lo que hace que, si quiero empezar por abajo, tenga que poner la altura con la mayoria absoluta - 1, ya que en la parte de arriba, habra 40
-            // y en la parte de abajo 41, que  es lo que exactamente quiero
-            double alturaLinea = tamanioPorEscanio * procesoSeleccionado.mayoriaAbsoluta-1 + canvasPactometro.ActualHeight * 0.05; 
-            introducirLinea(alturaLinea);
-            if(partidosIzq != null)
-            {
-                foreach (Partido partido in partidosIzq)
-            {
-                //Tamaño de cada rectangulo, lo añadimos
-                double tamanioPartido = tamanioPorEscanio * partido.scanios;
-                agregarRectanguloPact(posIzq, comienzoProxRectanguloIzq, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
-                comienzoProxRectanguloIzq += tamanioPartido;
-            }
-            }
-            if(partidosDer.Count() > 0)
-            {
-                foreach (Partido partido in partidosDer)
-                {
-                    //Tamaño de cada rectangulo, lo añadimos
-                    double tamanioPartido = tamanioPorEscanio * partido.scanios;
-                    agregarRectanguloPact(posDer, comienzoProxRectanguloDer, anchoRectangulo, tamanioPartido, partido.color, partido.scanios, partido, partidosIzq, partidosDer);
-                    comienzoProxRectanguloDer += tamanioPartido;
-                }
-            }
-
-            this.partidosDer = partidosDer;
-            this.partidosIzq = partidosIzq;
-
-            comp = 0;
-        }
-
-
-
-        private void Wsec_closed(object sender, EventArgs e)
-        {
-            wsec = null;
-        }
-
-
-
-        
-        private void mostarCuadroTamanioMinimo()
-        {
-
-            string msg = "La aplicación no puede hacerse más pequeña";
-            string titulo = "Elecciones";
-
-            MessageBoxButton boton = MessageBoxButton.OK;
-            MessageBoxImage imagen = MessageBoxImage.Error;
-
-            MessageBox.Show(msg, titulo, boton, imagen);
-        }
     }
 }

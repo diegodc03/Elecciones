@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="Elecciones.GraficoComparatorioEntreElecciones">
+    <Position X="1.75" Y="9.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAgCA=</HashCode>
+      <FileName>GraficoComparatorioEntreElecciones.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Elecciones.ItemEventArgs">
+    <Position X="8.25" Y="9.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>VentanaSecundaria.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Elecciones.VentanaSecundaria" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAABIAAABEBAAARAgABBAAAAAAAAIAAAAEAAA=</HashCode>
+      <FileName>VentanaSecundaria.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Elecciones.ProcesoElectoral">
+    <Position X="10.75" Y="3.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAEAAABAgAAAAEAAAAAAAgAA=</HashCode>
+      <FileName>ProcesoElectoral.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Elecciones.Partido">
+    <Position X="11" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEBAAAAAAAAAAAAAAAAAAAAACAAAAAAEAAAAA=</HashCode>
+      <FileName>ProcesoElectoral.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Elecciones.PartidosPersistentes">
+    <Position X="16.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAIQAAAAAAAAAgAAEAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>PartidosPersistentes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Elecciones.LecturaDeFicheroTxt">
+    <Position X="17" Y="10.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PartidosPersistentes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Elecciones.LecturaDeFicheroProcesosElectorales">
+    <Position X="1.25" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PartidosPersistentes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Elecciones.MainWindow" BaseTypeListCollapsed="true">
+    <Position X="1.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACQAIIQAAAsAACgAAAABAAARCAAAQAAAACEAAEgAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="Elecciones.GraficoUnitario">
+    <Position X="4.25" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>GraficoUnitario.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Elecciones.AgregarProcesoElectoral" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>CAAQAoORAACACAAAAKAEAgAAACIAAAAQIBAAAIAAEAA=</HashCode>
+      <FileName>AgregarProcesoElectoral.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

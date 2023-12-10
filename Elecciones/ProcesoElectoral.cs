@@ -10,7 +10,7 @@ namespace Elecciones
 
     public class ProcesoElectoral
     {
-        public String nombreProcesoElectoral 
+        public string nombreProcesoElectoral 
         { 
             get; 
             set; 
@@ -46,7 +46,7 @@ namespace Elecciones
            
         }
 
-        public ProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, ObservableCollection<Partido> partidos)
+        public ProcesoElectoral(string nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, ObservableCollection<Partido> partidos)
         {
             this.nombreProcesoElectoral = nombreEleccion;
             this.fechaProcesoElectoral = fechaProceso;
@@ -54,22 +54,48 @@ namespace Elecciones
             this.mayoriaAbsoluta = mayoria;
            
             //Se crea una lista nueva de partidos para que se vayan introduciendo
-            ObservableCollection<Partido> Partidos = new ObservableCollection<Partido>();
+            List<Partido> Partidos = new List<Partido>();
             this.Partidos = partidos;
 
         }
-        
+
+
+        public ProcesoElectoral ClonarProcesoElectoral(ProcesoElectoral procesoOriginal)
+        {
+            ProcesoElectoral procesoClonado = new ProcesoElectoral
+            {
+                nombreProcesoElectoral = procesoOriginal.nombreProcesoElectoral,
+                fechaProcesoElectoral = procesoOriginal.fechaProcesoElectoral,
+                numeroDeEscanios = procesoOriginal.numeroDeEscanios,
+                mayoriaAbsoluta = procesoOriginal.mayoriaAbsoluta
+            };
+
+            procesoClonado.Partidos = new ObservableCollection<Partido>();
+            foreach (Partido partido in procesoOriginal.Partidos)
+            {
+                procesoClonado.Partidos.Add(new Partido
+                {
+                    nombrePartido = partido.nombrePartido,
+                    scanios = partido.scanios,
+                    color = partido.color
+                });
+            }
+
+            return procesoClonado;
+        }
+
+
     }
 
-    
+
     public class Partido
     {
-        public String nombrePartido { get; set; }
+        public string nombrePartido { get; set; }
         public int scanios { get; set; }
-        public String color { get; set; }
+        public string color { get; set; }
         public int numProceso { get; set; }
 
-        public Partido(String part, int scani, String colorr)
+        public Partido(string part, int scani, string colorr)
         {
             this.nombrePartido = part;
             this.scanios = scani;
@@ -80,26 +106,6 @@ namespace Elecciones
         {
             
         }
-
-
-
     }
-
-
-    public static class ProcesoElectoralFactory
-    {
-        public static ProcesoElectoral CrearProcesoElectoral(String nombreEleccion, DateTime fechaProceso, int numEscanios, int mayoria, ObservableCollection<Partido> partidos)
-        {
-            return new ProcesoElectoral(nombreEleccion, fechaProceso, numEscanios, mayoria, partidos);
-        }
-
-
-        public static Partido CrearPartido(String nombreProceso, int numEscanios, string color)
-        {
-            return new Partido(nombreProceso, numEscanios, color);
-        }
-
-    }
-
     
 }

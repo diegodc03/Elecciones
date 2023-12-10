@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Elecciones"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        
+        Title="Ventana Principal" Height="450" Width="800"
+      
         >
     <!--SizeChanged="Window_SizeChanged"-->
     <Grid>
@@ -23,6 +23,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+
         
         
         <TabControl TabStripPlacement="Bottom" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="4" >
@@ -41,7 +42,12 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Canvas Name="canvasUnitaria" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" SizeChanged="canvasUnit_SizeChanged" Margin="30" ></Canvas>
+                    <Canvas Name="canvasUnitaria" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="6" SizeChanged="CanvasUnit_SizeChanged" Margin="30" ></Canvas>
+                        
+                   
+                    <TextBlock x:Name="NombreEleccionLabelGraficaUnitaria" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20">
+                       
+                    </TextBlock>
                 </Grid>
                 
             </TabItem>
@@ -59,8 +65,16 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Canvas x:Name="canvasComparativa" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30"  SizeChanged="canvasComp_SizeChanged"></Canvas>
+                    <Canvas x:Name="canvasComparativa" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30"  SizeChanged="CanvasComp_SizeChanged">
+                        <Canvas x:Name="CanvasTextoComparativo" >
+                            
+                        </Canvas>
+                    </Canvas>
 
+
+                    <TextBlock x:Name="NombreEleccionLabelGraficComparativo" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20"  ></TextBlock>
+                    
+                    
 
                 </Grid>
             </TabItem>
@@ -78,7 +92,10 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Canvas Name="canvasPactometro" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30" SizeChanged="canvasPactometro_SizeChanged"></Canvas>
+                    <Canvas Name="canvasPactometro" Background="#c3c3c3" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" Margin="30" SizeChanged="CanvasPactometro_SizeChanged"></Canvas>
+                    <TextBlock x:Name="NombreEleccionLabelGraficaPactometro" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20"  >
+                        
+                    </TextBlock>
                     <TextBlock Name="textoMayoria" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="Auto" Width="Auto"></TextBlock>
                     <TextBlock Name="textoMayoria2" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="Auto" Width="Auto"></TextBlock>
 

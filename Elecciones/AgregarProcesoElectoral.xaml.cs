@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -16,20 +17,7 @@ using System.Windows.Shapes;
 
 namespace Elecciones
 {
-    
-    public class ProcesosElectoralesEventArgs : EventArgs
-    {
-        public ObservableCollection<ProcesoElectoral> ProcesoElectorales { 
-            get; 
-            set; 
-        }
-
-        public ProcesosElectoralesEventArgs(ObservableCollection<ProcesoElectoral> procesoElectorals)
-        {
-            ProcesoElectorales = procesoElectorals;
-        }
-    }
-
+   
 
     /// <summary>
     /// Lógica de interacción para AgregarProcesoElectoral.xaml
@@ -38,10 +26,12 @@ namespace Elecciones
     {
 
         //Declaro evento 
-        public event EventHandler<ProcesosElectoralesEventArgs> ProcesosElectoralesActualizados;
+        //public event EventHandler<ProcesosElectoralesEventArgs> ProcesosElectoralesActualizados;
 
         ObservableCollection<Partido> partidos = new ObservableCollection<Partido>();
         ObservableCollection<ProcesoElectoral> listaProcesosElectorales;
+
+        ProcesoElectoral proceso;
 
         List<String> partidosPers = new List<string>();
         List<String> coloresPartidos = new List<string>();
@@ -69,42 +59,64 @@ namespace Elecciones
             introducirValoresComboBox();
 
             
-            if(procesosActualizados != null)
+            if(procesosActualizados.Count > 0)
             {
+                ProcesoElectoral procesoAClonar;
+
                 listaProcesosElectorales = new ObservableCollection<ProcesoElectoral>();
-                listaProcesosElectorales = procesosActualizados;
+                //Añadimos procesos a una lista que no tenga referencia ObservableCollection
+                foreach (ProcesoElectoral proc in procesosActualizados)
+                {
+                    procesoAClonar = new ProcesoElectoral();
+                    listaProcesosElectorales.Add(procesoAClonar.ClonarProcesoElectoral(proc));
+
+                }
             }
             else
             {
                 listaProcesosElectorales = new ObservableCollection<ProcesoElectoral>();
             }
             
-
-            
-
         }
         
 
         //Contructor para editar proceso Electoral
         public AgregarProcesoElectoral(ProcesoElectoral proceso, ObservableCollection<ProcesoElectoral> procesos)
         {
+
             InitializeComponent();
-            this.listaProcesosElectorales = procesos;
-            ProcesoElectoral procesoAEditar = proceso;
+
+            ProcesoElectoral procesoAClonar;
+
+            listaProcesosElectorales = new ObservableCollection<ProcesoElectoral>();
+            //Añadimos procesos a una lista que no tenga referencia ObservableCollection
+            foreach(ProcesoElectoral proc in procesos)
+            {
+                procesoAClonar = new ProcesoElectoral();
+                listaProcesosElectorales.Add(procesoAClonar.ClonarProcesoElectoral(proc));
+                
+            }
+
+            this.proceso = new ProcesoElectoral();
+
+            procesoAClonar = new ProcesoElectoral();
+            this.proceso = procesoAClonar.ClonarProcesoElectoral(proceso);
+
+            //partidos = proceso.Partidos;
             introducirValoresComboBox();
 
             //Rellenamos los datos en este metodo
-            EditarProcesoElectoral(procesoAEditar);
+            EditarProcesoElectoral(this.proceso);
             modificacionProceso = 1;
         }
 
 
+        
+
+
         //Metodos para editar el proceso a Editar
         private void EditarProcesoElectoral(ProcesoElectoral proceso)
-        {
-            //PartidoComboBox.Text = proceso.nombreProcesoElectoral;
-            //NumEscaniosPartido.Text = proceso.numeroDeEscanios.ToString();
-            
+        {   
             aux = proceso;
 
             nombreEleccion.Text = proceso.nombreProcesoElectoral;
@@ -112,10 +124,11 @@ namespace Elecciones
             MayoriaAbsoluta.Text = proceso.mayoriaAbsoluta.ToString();
             FechaEleccion.Text = proceso.fechaProcesoElectoral.ToString();
             
-            partidos.Clear();
-            partidos = proceso.Partidos;
+            this.partidos.Clear();
+            this.partidos = proceso.Partidos;
 
             DataGridPartidos.ItemsSource = partidos;
+
             foreach(Partido partido in partidos)
             {
                 sumatorioNumeroEscanios = sumatorioNumeroEscanios + partido.scanios;
@@ -157,7 +170,7 @@ namespace Elecciones
             {
 
 
-                //Comprobamos si usuario ha introducido los dos valores pedidos
+                //Comprobamos si usuario ha introducido los dos valores pedidos ya que para poder coger el numero de partidos, se necesita el numero de escaños total
                 if (string.IsNullOrWhiteSpace(numeroScaniosTotal))
                 {
                     String mensajePorPantalla = "Primero completa los datos del proceso";
@@ -184,14 +197,14 @@ namespace Elecciones
                                     if (partidos.FirstOrDefault(x => x.nombrePartido.Contains(nombrePartido)) == null)
                                     {
 
-
                                         nombrePartido = nombrePartido.ToUpper();
-                                        indiceFila = DataGridPartidos.SelectedIndex;
+                                        //indiceFila = DataGridPartidos.SelectedIndex;
 
                                         //Se crea Instancia y se introduce en ListaDePartidos
                                         Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
                                         partidos.Add(partidoPolitico);
 
+                                        DataGridPartidos.ItemsSource = partidos;
 
 
                                         //Añadir a ListaPartidosPersistentes si no existe todavia
@@ -205,18 +218,11 @@ namespace Elecciones
                                             PartidoComboBox.ItemsSource = partidosPers;
                                         }
 
+                                       
 
-
-                                        Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
-                                        //DataGridPartidos.ItemsSource = nuevoPartidoData;
-                                        DataGridPartidos.ItemsSource = partidos;
-                                        indiceFila = DataGridPartidos.SelectedIndex;
-                                        //Vuelvo a dejar los DATABOX y COMBOBOX en blanco
                                         PartidoComboBox.Text = "";
                                         NumEscaniosPartido.Text = "";
                                         ColoresComboBox.Text = "";
-
-
                                     }
                                     else
                                     {
@@ -229,7 +235,6 @@ namespace Elecciones
                                     String mensajePorPantalla = "Tiene que poner un valor menor que el número de escaños del proceso electoral";
                                     MessageBox.Show(mensajePorPantalla);
                                     sumatorioNumeroEscanios = sumatorioNumeroEscanios - numScanios;
-
                                 }
                             }
                             else
@@ -252,17 +257,9 @@ namespace Elecciones
                                     Partido partidoPolitico = new Partido(nombrePartido, numScanios, colorPartido);
                                     partidos[indice] = partidoPolitico;
 
-                                    //DataGridPartidos.Items.Clear();
-                                    //foreach (Partido part in partidos)
-                                    //{
+                                    
                                     DataGridPartidos.ItemsSource = partidos;
-                                    //}
-
-                                    //Partido partido = ProcesoElectoralFactory.CrearPartido(nombrePartido, numScanios, colorPartido);
-                                    //DataGridPartidos.ItemsSource = nuevoPartidoData;
-                                    //DataGridPartidos.Items.Add(partido);
-                                    //indiceFila = DataGridPartidos.SelectedIndex;
-                                    //Vuelvo a dejar los DATABOX y COMBOBOX en blanco
+                                    
                                     PartidoComboBox.Text = "";
                                     NumEscaniosPartido.Text = "";
                                     ColoresComboBox.Text = "";
@@ -284,16 +281,12 @@ namespace Elecciones
                     }
                     else
                     {
-                        //Sacamos error por pantalla
                         String mensajePorPantalla = "Introduzca el valor de los escaños otra vez, valor incorrecto";
                         MessageBox.Show(mensajePorPantalla);
                     }
                 }               
             }
         }
-
-        //public event EventHandler<ProcesoElectoralEvenArgs> ProcesoElectoralEven;
-
 
         private void AniadirProcesoElectoral_Click(object sender, RoutedEventArgs e)
         {
@@ -326,28 +319,28 @@ namespace Elecciones
                     //Compruebo que el numero de Escaños es igual, a la suma de los escaños de todos los partidos
                     if(sumatorioNumeroEscanios == totalEscanios)
                     {
-                        //MessageBox.Show("La cosa ha ido bien");
-                        //OrdenaLista
                         
-                        //partidos.OrderByDescending(s => s.scanios);
                         ObservableCollection<Partido> auxiliar = new ObservableCollection<Partido>(partidos.OrderByDescending(x => x.scanios));
-                        //auxiliar = partidos.OrderByDescending(x => x.scanios).ToList();
-
-
-                        //Aqui significa que todo ha ido bien
-                        //Instncia de la clase procesoElectoral
+                   
                         fechaSeleccionada = FechaEleccion.SelectedDate.Value;
                         ProcesoElectoral procesoNuevo = new ProcesoElectoral(nombreProceso, fechaSeleccionada, totalEscanios, mayoriaEscanios, auxiliar);
 
-                        //Se añade cada vez que se pulsa
-                        //Se añade al observableCollection, haciendo que pueda luego pasar a la ventana secundaria
+                        
                         if(modificacionProceso == 0)
                         {
                             listaProcesosElectorales.Add(procesoNuevo);
+
+                            
+
                             List<ProcesoElectoral> aux = new List<ProcesoElectoral>();
                             List<ProcesoElectoral> ordenada = new List<ProcesoElectoral>();
                             //Creo nueva lista para ordenar los datos
-                            aux = listaProcesosElectorales.ToList<ProcesoElectoral>();
+                            ProcesoElectoral po = new ProcesoElectoral();
+                            foreach(ProcesoElectoral procesoElec in listaProcesosElectorales)
+                            {
+                                aux.Add(po.ClonarProcesoElectoral(procesoElec));
+                            }
+                         
                             ordenada = aux.OrderByDescending(x => x.fechaProcesoElectoral).ToList();
 
                             listaProcesosElectorales.Clear();
@@ -355,13 +348,11 @@ namespace Elecciones
                             {
                                 listaProcesosElectorales.Add(p);
                             }
-
+                            
 
                         }
                         else
                         {
-
-
                             ProcesoElectoral procesoRemplazo = listaProcesosElectorales.FirstOrDefault(x => x.fechaProcesoElectoral.ToString().Contains(aux.fechaProcesoElectoral.ToString()));
                             if(procesoRemplazo != null)
                             {
@@ -369,19 +360,13 @@ namespace Elecciones
                                 listaProcesosElectorales[indice] = procesoNuevo;
                                 modificacionProceso = 0;
                             }
-                            
-                            
                         }
-                        
-
+                   
                         //Se reinicia todos los textBox para introducir mas elementos
                         nombreEleccion.Text = "";
                         MayoriaAbsoluta.Text = "";
                         NumEscaniosTotal.Text = "";
 
-
-                        //Tengo que eliminar los partidos del datagrid
-                        //Hay que pasar todos los elementos de los partidos a 0, para que así no interfieran al añadir otro procesoElectoral
                         DataGridPartidos.ItemsSource = null;
                         partidos = new ObservableCollection<Partido>();
                         sumatorioNumeroEscanios = 0;
@@ -431,9 +416,19 @@ namespace Elecciones
 
         }
 
+        public event EventHandler<ObservableCollection<ProcesoElectoral>> listaActualizada;
+
+        private void EnviarListaActualizada()
+        {
+            listaActualizada?.Invoke(this, listaProcesosElectorales);
+        }
+
+
+
+
         private void Salir_Click(object sender, RoutedEventArgs e)
         {
-            ProcesosElectoralesActualizados?.Invoke(this, new ProcesosElectoralesEventArgs(listaProcesosElectorales));
+            EnviarListaActualizada();
             this.Close();
         }
 
@@ -450,14 +445,7 @@ namespace Elecciones
 
                 partidos.Remove(partidoSeleccionado);
 
-                //DataGridPartidos.Items.Clear();
-                //Añadimos otra vez todo correctamente sin el elemento seleccionado
-                //foreach (Partido part in partidos)
-                //{
-                DataGridPartidos.ItemsSource = partidos;
-                
-
-
+                DataGridPartidos.ItemsSource = partidos;                
             }
         }
 
@@ -465,16 +453,16 @@ namespace Elecciones
         {
             Partido partidoSeleccionado = DataGridPartidos.SelectedItem as Partido;
 
-            if(partidoSeleccionado != null)
+            
+
+            if (partidoSeleccionado != null)
             {
                 this.auxPartido = partidoSeleccionado;
                 PartidoComboBox.Text = partidoSeleccionado.nombrePartido;
-                //PartidoComboBox.IsEnabled = false;
                 NumEscaniosPartido.Text = partidoSeleccionado.scanios.ToString();
                 ColoresComboBox.Text = partidoSeleccionado.color;
 
                 modificacionPartidos = 1;
-
             }
         }
 

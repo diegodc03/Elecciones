@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,78 +33,55 @@ namespace Elecciones
 
 
     public partial class VentanaSecundaria : Window
-    {
-        //Creamos una lista observable, aqui pasamos la lista de la ventana "AgregarProcesoElectoral" consiguiendo tenerla y poder rellanar el DataGrid
-        //public ObservableCollection<ProcesoElectoral> listaProcesoElectoral { get; } = new ObservableCollection<ProcesoElectoral>();
-        
+    {   
         ObservableCollection<ProcesoElectoral> procesosElectorales = new ObservableCollection<ProcesoElectoral>();
         ObservableCollection<Partido> partidosPoliticos = new ObservableCollection<Partido>();
-      
-        
-        //Evento que salta cuando cambiamos los elementos de la grafica
-        //public event Action<ObservableCollection<ProcesoElectoral>> OnDatosActualizados;
-
 
         
+        public event EventHandler LimpiarCanvas;
+
+        protected virtual void OnLimpiarCanvas()
+        {
+            LimpiarCanvas?.Invoke(this, EventArgs.Empty);
+        }
+
 
         public VentanaSecundaria(ObservableCollection<ProcesoElectoral> procesos)
         {
             InitializeComponent();
 
             this.procesosElectorales = procesos;
-            DataGridProcesosElectorales.ItemsSource = procesosElectorales;
+            if (procesosElectorales.Count > 0)
+            {
+                DataGridProcesosElectorales.ItemsSource = procesosElectorales;
+            }
         }
 
-
-
-        private void BotonOk_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-            Close();
-        }
 
         private void BotonCrearEleccion_Click(object sender, RoutedEventArgs e)
         {
-            //DialogResult = true;
 
             AgregarProcesoElectoral agregar = new AgregarProcesoElectoral(procesosElectorales);
 
             //Me suscribo al avento
-            agregar.ProcesosElectoralesActualizados += ListaProcesosElectorales;
-            
+            //agregar.ProcesosElectoralesActualizados += ListaProcesosElectorales;
+            agregar.listaActualizada += actualizarProcesoElectoral;
             agregar.Title = "Agregar Proceso Electoral";
             agregar.ShowDialog();
             
         }
         
-        private void ListaProcesosElectorales(object sender, ProcesosElectoralesEventArgs e)
-        {
-            //Como paso todos los elementos otra vez a la ventanaProcesoElectorral, lo que pasa es que luego al devolverlos, se me pasan todos otra vez, y se añaden todos al dataGrid
-            // como no quiero que pase eso, elimino todos los elementos y asi no tengo problema
-            
-            procesosElectorales = e.ProcesoElectorales;
-            DataGridProcesosElectorales.ItemsSource = procesosElectorales;
-
-        }
 
 
-        //Evcento al pulsar cada uno de los procesos Electorales
-        //Este evento nos permite que dependiendo donde toquemos, tendremos los partidos politicos de cada proceso y solo será ir añadiendo al dataGrid
         private void DataGridProcesosElectorales_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {  
             
+            if(DataGridProcesosElectorales.SelectedItem != null && DataGridProcesosElectorales.SelectedItem is ProcesoElectoral)
+            {
+                ProcesoElectoral proceso = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
+                ActualizarGrafica(proceso);
+            }
             
-          //  if(tipoGrafica == TipoGrafica.Unitaria || tipoGrafica == TipoGrafica.Pactometro || tipoGrafica == TipoGrafica.Pactometro)
-           // {
-               // procesosGraficas.Clear();
-                if(DataGridProcesosElectorales.SelectedItem != null && DataGridProcesosElectorales.SelectedItem is ProcesoElectoral)
-                {
-                //Tenemos el proceso
-                    ProcesoElectoral proceso = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
-                    ActualizarGrafica(proceso);
-                    //O hacemos un evento o metodo para llamar
-                }
-            //}
 
             DataGridPartidosPoliticos.ItemsSource=null;
 
@@ -131,22 +109,15 @@ namespace Elecciones
         }
 
 
-
         private void ActualizarGrafica(ProcesoElectoral datos)
         {
-            //ItemChanged?.Invoke(this, new ItemEventArgs(datos));
-
-            //Estamos aqui para pasar a la ventana principal
-            //Datos es la collection donde he metido los valores para pasar a la ventana prinipal
             if (datos != null)
             {
                 OnItemChanged(new ItemEventArgs((ProcesoElectoral)datos));
             }
         }
 
-
-
-
+        
         private void BotonEliminarEleccion_Click(object sender, RoutedEventArgs e)
         {
             ProcesoElectoral procesoElectoralSeleccionado = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
@@ -155,36 +126,59 @@ namespace Elecciones
             {
                 procesosElectorales.Remove(procesoElectoralSeleccionado);
 
-                //DataGridProcesosElectorales.Items.Clear();
-                //Añadimos otra vez todo correctamente sin el elemento seleccionado
-                //foreach(ProcesoElectoral proceso in procesosElectorales)
-                //{
-                    DataGridProcesosElectorales.ItemsSource = procesosElectorales;
-                //}
+                DataGridProcesosElectorales.ItemsSource = procesosElectorales;
+
+                //Invocamos el evento 
+                OnLimpiarCanvas();
+               
             }
+            
         }
 
         
         private void BotonEditarEleccion_Click(object sender, RoutedEventArgs e)
         {
+
+            BotonEditar.IsEnabled = false;
+            BotonEliminar.IsEnabled = false;
+            BotonCrear.IsEnabled = false;
+
+
             ProcesoElectoral procesoElectoralSeleccionado = DataGridProcesosElectorales.SelectedItem as ProcesoElectoral;
             if(procesoElectoralSeleccionado != null)
             {
                 AgregarProcesoElectoral agregar = new AgregarProcesoElectoral(procesoElectoralSeleccionado, procesosElectorales);
-                agregar.Show();
-                
+                agregar.Title = "Modifcar Proceso Electoral";
+                agregar.listaActualizada += actualizarProcesoElectoral;
+
+
+                agregar.Show(); 
             }
-
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void actualizarProcesoElectoral(object sender , ObservableCollection<ProcesoElectoral> procesosActualizados)
         {
+            BotonEditar.IsEnabled = true;
+            BotonEliminar.IsEnabled = true;
+            BotonCrear.IsEnabled = true;
+            this.procesosElectorales.Clear();
+            ProcesoElectoral p = new ProcesoElectoral();
+
+            foreach(ProcesoElectoral procesoElectoral in procesosActualizados)
+            {
+                procesosElectorales.Add(p.ClonarProcesoElectoral(procesoElectoral));
+            }
+           
+            DataGridProcesosElectorales.ItemsSource = this.procesosElectorales;
+            //Invocamos el evento 
+            OnLimpiarCanvas();
 
         }
+
 
         private void SecondWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (segundaVentana.ActualWidth < 550 || segundaVentana.ActualHeight < 350)
+            if (segundaVentana.ActualWidth < 600 || segundaVentana.ActualHeight < 400)
             {
                 String mensajePorPantalla = "No se puede hacer tan pequeño";
                 MessageBox.Show(mensajePorPantalla);

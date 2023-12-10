@@ -95,45 +95,48 @@ namespace Elecciones
 
     public class LecturaDeFicheroProcesosElectorales { 
     
-        public ObservableCollection<ProcesoElectoral>  leerCSVPartidos(String nombreFich)
+        public ObservableCollection<ProcesoElectoral>  leerCSProcesos(String nombreFich)
         {
 
             ObservableCollection<ProcesoElectoral> procesos = new ObservableCollection<ProcesoElectoral>();
-
-            using (StreamReader reader = new StreamReader(nombreFich))
+            if (File.Exists(nombreFich))
             {
-                while (!reader.EndOfStream)
+                using (StreamReader reader = new StreamReader(nombreFich))
                 {
-                    //Lee toda la linea
-                    String linea = reader.ReadLine();
-                    //Dividimos la linea en ','
-                    string[] fila = linea.Split(',');
-                    int cont = 0;
-
-                    ProcesoElectoral proceso = new ProcesoElectoral
+                    while (!reader.EndOfStream)
                     {
-                        nombreProcesoElectoral = fila[0],
-                        fechaProcesoElectoral = DateTime.ParseExact(fila[1], "d/M/yyyy", CultureInfo.InvariantCulture),
-                        
-                    };
+                        //Lee toda la linea
+                        String linea = reader.ReadLine();
+                        //Dividimos la linea en ','
+                        string[] fila = linea.Split(',');
+                        int cont = 0;
 
-                    ObservableCollection<Partido> partidos= new ObservableCollection<Partido>();
+                        ProcesoElectoral proceso = new ProcesoElectoral
+                        {
+                            nombreProcesoElectoral = fila[0],
+                            fechaProcesoElectoral = DateTime.ParseExact(fila[1], "d/M/yyyy", CultureInfo.InvariantCulture),
 
-                    for (int i=2; i<fila.Length; i+=3)
-                    {
-                        Partido partido = new Partido();
-                        partido.nombrePartido = fila[i];
-                        partido.scanios = Int32.Parse(fila[i+1]);
-                        cont = cont + partido.scanios;
-                        partido.color = fila[i+2];
-                        partidos.Add(partido);
+                        };
+
+                        ObservableCollection<Partido> partidos = new ObservableCollection<Partido>();
+
+                        for (int i = 2; i < fila.Length; i += 3)
+                        {
+                            Partido partido = new Partido();
+                            partido.nombrePartido = fila[i];
+                            partido.scanios = Int32.Parse(fila[i + 1]);
+                            cont = cont + partido.scanios;
+                            partido.color = fila[i + 2];
+                            partidos.Add(partido);
+                        }
+                        proceso.Partidos = partidos;
+                        proceso.numeroDeEscanios = cont;
+                        proceso.mayoriaAbsoluta = cont / 2 + 1;
+
+                        procesos.Add(proceso);
                     }
-                    proceso.Partidos = partidos;
-                    proceso.numeroDeEscanios = cont;
-                    proceso.mayoriaAbsoluta = cont/2+1;
-
-                    procesos.Add(proceso);
                 }
+            
             }
 
             return procesos;

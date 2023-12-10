@@ -24,44 +24,30 @@ namespace Elecciones
         {
 
             double espacioEntreRectangulos = canvasGrafica.ActualWidth * 0.02;
-            //double porcentajeAltura = 0.8;
 
-            //Calcular el ancho total para cada rectangulo y le quitamos el ancho de cada lado
             double anchoTotal = canvasGrafica.ActualWidth - ((proceso.Partidos.Count+1) * espacioEntreRectangulos + 15);
 
-            //Tamaño para cada rectangulo
             double anchoRectangulo = anchoTotal / proceso.Partidos.Count;
 
-            // Encontrar la cantidad máxima de escaños entre los partidos
             double maxEscanios = proceso.Partidos.Max(p => p.scanios);
             double maxAltura = maxEscanios + maxEscanios * 0.25;
 
-           // double maxAltura = canvasGrafica.ActualHeight + canvasGrafica.ActualHeight*0.01;
-
-            //Dejamos espacio entre el canvas para hacerlo mas "bonito"
-            //Donde lo vamos a colocar en el canvas
             double leftInicio = espacioEntreRectangulos + 15;
             double left = leftInicio;
             double bottom = 30;
-
-
-
 
             foreach (Partido partido in proceso.Partidos)
             {
                 double alturaRectangulo = (partido.scanios * canvasGrafica.ActualHeight ) / maxAltura;
 
-                agregarRectangulo(left, bottom, anchoRectangulo, alturaRectangulo, partido.color, partido.nombrePartido, partido.scanios);
+                AgregarRectangulo(left, bottom, anchoRectangulo, alturaRectangulo, partido.color, partido.nombrePartido, partido.scanios);
 
-                agregarEtiqueta(partido.nombrePartido, anchoRectangulo, left, bottom);
+                AgregarEtiqueta(partido.nombrePartido, anchoRectangulo, left, bottom);
 
                 left += anchoRectangulo + espacioEntreRectangulos;
             }
 
 
-            //Metemos las lineas de la iquierda del canvas para que podamos ver el numero de escaños que ha sacado cada partido
-            // maxEscanios tiene ek numero maximo y le he añadido  10 para que se vea mejor en la pantalla --> esta guardado en la variable maxAltura
-            //Pondremos cada 20 escaños para que se pueda ver bien los valores
             for (int i = 0; i <= maxAltura; i = i + 20)
             {
                 
@@ -80,11 +66,10 @@ namespace Elecciones
 
                     canvasGrafica.Children.Add(linea);
 
-                    // Agregar un TextBlock con el valor de 'i' junto a la línea
                     TextBlock texto = new TextBlock();
                     texto.Text = i.ToString();
-                    Canvas.SetLeft(texto, 7); // Ajusta la posición horizontal según tus necesidades
-                    Canvas.SetTop(texto, canvasGrafica.ActualHeight - valorCanvas - bottom); // Ajusta la posición vertical según tus necesidades
+                    Canvas.SetLeft(texto, 7); 
+                    Canvas.SetTop(texto, canvasGrafica.ActualHeight - valorCanvas - bottom);
                     double factorEscala = 0.8;
                     texto.FontSize = factorEscala * texto.FontSize;
                     canvasGrafica.Children.Add(texto);
@@ -92,7 +77,7 @@ namespace Elecciones
             }
         }
 
-        private void agregarRectangulo(double left, double bottom, double width, double height, string colorHex, string etiqueta, int escanios)
+        private void AgregarRectangulo(double left, double bottom, double width, double height, string colorHex, string etiqueta, int escanios)
         {
             
             Rectangle rectangulo = new System.Windows.Shapes.Rectangle();
@@ -104,21 +89,18 @@ namespace Elecciones
             SolidColorBrush brocha = new SolidColorBrush(clr);
 
             rectangulo.Fill = brocha;
-            //rectangulo.Stroke = brocha; rectangulo.StrokeThickness = 1;
+            
             Canvas.SetLeft(rectangulo, left);
             
             Canvas.SetBottom(rectangulo, bottom);
 
-            //Agrego ToolTip al rectangulo para que cuando pase por el van los escaños
             rectangulo.ToolTip = new ToolTip { Content = escanios + " escaños" };
 
             canvasGrafica.Children.Add(rectangulo);
-
-           
         }
 
 
-        private void agregarEtiqueta(string nombrePartido, double anchoRectangulo, double left, double bottom)
+        private void AgregarEtiqueta(string nombrePartido, double anchoRectangulo, double left, double bottom)
         {
             TextBlock etiquetaText = new TextBlock();
             etiquetaText.Text = nombrePartido;

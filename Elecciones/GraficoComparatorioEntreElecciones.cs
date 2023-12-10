@@ -24,6 +24,40 @@ namespace Elecciones
         }
 
 
+        public void CrearListaParaModificarColores(List<ProcesoElectoral> procesos)
+        {
+            List<ProcesoElectoral> procesosModificados = new List<ProcesoElectoral>();
+
+            foreach(ProcesoElectoral proceso in procesos)
+            {
+                ProcesoElectoral procesoCopia = new ProcesoElectoral
+                {
+                    nombreProcesoElectoral = proceso.nombreProcesoElectoral,
+                    fechaProcesoElectoral = proceso.fechaProcesoElectoral,
+                    numeroDeEscanios = proceso.numeroDeEscanios,
+                    mayoriaAbsoluta = proceso.mayoriaAbsoluta,
+                    Partidos = new ObservableCollection<Partido>()
+                };
+
+                foreach (Partido partido in proceso.Partidos)
+                {
+                    // Crear una copia del partido con un color modificado
+                    Partido partidoCopia = new Partido
+                    {
+                        nombrePartido = partido.nombrePartido,
+                        scanios = partido.scanios,
+                        color = partido.color
+                    };
+
+                    procesoCopia.Partidos.Add(partidoCopia);
+                }
+
+                procesosModificados.Add(procesoCopia);
+            }
+
+        }
+
+
         public void MostrarGrafico(List<ProcesoElectoral> procesos)
         {
 
@@ -48,16 +82,29 @@ namespace Elecciones
             List<Partido> listaPartidosPoliticos = new List<Partido>();
            
             int contadorDeProceso = 0;
-            //Se ira haciendo mas grande conforme el bucle avance, si es 2 o mayor, si se crea implica que seria uno que no existe
+          
             int escaniosMaximos = 0;
-            //Bucle de todos los procesos para meterlos en el diccionario
+        
             Dictionary<string, string> dicComprobacionColores = new Dictionary<string, string>();
 
             foreach(ProcesoElectoral proceso in procesos)
             {
                 contadorDeProceso = contadorDeProceso + 1;
                 //Lista con todos los partidos politicos del proceso electoral
-                listaPartidosPoliticos = new List<Partido>(proceso.Partidos);
+                listaPartidosPoliticos = new List<Partido>();
+              
+                //Creo una lista diferente para asi no tengan referencia los partidos con la lista que paso a mostrarGrafico, ya que se pasa por refrencia
+                foreach (Partido partido in proceso.Partidos)
+                {
+                    Partido partidoCopia = new Partido
+                    {
+                        nombrePartido = partido.nombrePartido,
+                        scanios = partido.scanios,
+                        color = partido.color
+                    };
+                    listaPartidosPoliticos.Add(partidoCopia);
+                }
+
 
                 //Recorremos todos los valores de la lista metiendolos en el diccionario
                 foreach(Partido partido in listaPartidosPoliticos)
@@ -101,23 +148,16 @@ namespace Elecciones
                 }
 
             }
-
-
-
-
-
             
             double maxAltura = maxEscanios + maxEscanios * 0.25;
 
-            //Calcular el ancho total para cada rectangulo y le quitamos el espacio entre los elementos
             double espacioNumPartidosTotal = dicPartidos.Count * contadorDeProceso;
             var val = canvasGrafica.ActualWidth;
             double anchoTotal = canvasGrafica.ActualWidth - ((espacioNumPartidosTotal+1) * espacioEntreRectangulos+15);
 
-            //Numero de rectangulos
+
             double totalRectangulos = dicPartidos.Count * contadorDeProceso;
 
-            //Tamaño para cada rectangulo
             double anchoRectangulo = anchoTotal / totalRectangulos;
             
 
@@ -134,43 +174,34 @@ namespace Elecciones
                 bool flag = true;
                 for (int i = 1; i <= contadorDeProceso; i++)
                 {
-                    //Buscamos el Partido Politico que tenga el numero de proseo electoral actual
-                    //FirstOrDefault busca el primer elemento que le indicamos, en este caso buscara el primer elemento que tenga i es decir, el proceso electoral Buscado
+                    
                     Partido partidoActual = listaPartido.FirstOrDefault(p => p.numProceso == i);
                     
-                    //Escribimos una unica vez el nombre del partido politico y que se pueda poner en todo el ancho
                     if (flag == true)
                     {
-
-                        double anchoEtiqueta = anchoRectangulo * 2 + espacioEntreRectangulos;
-                        agregarEtiqueta(listaPartido[0].nombrePartido, anchoEtiqueta, left, bottom);
+                        double anchoEtiqueta = anchoRectangulo * listaPartido.Count() + espacioEntreRectangulos;
+                        AgregarEtiqueta(listaPartido[0].nombrePartido, anchoEtiqueta, left, bottom);
                         flag = false;
                     }
 
-
-                    // Verificar si se encontró un partido para el número de proceso actual
                     if (partidoActual != null)
                     {
                         Console.WriteLine(partidoActual.nombrePartido);
                         double alturaRectangulo = (partidoActual.scanios * canvasGrafica.ActualHeight) / maxAltura;
                         int contNumProcesos = procesos.Count();
-                        agregarRectangulo(left, bottom, anchoRectangulo, alturaRectangulo, partidoActual.color, partidoActual.nombrePartido, partidoActual.scanios, partidoActual.numProceso-1, contNumProcesos);
+                        AgregarRectangulo(left, bottom, anchoRectangulo, alturaRectangulo, partidoActual.color, partidoActual.nombrePartido, partidoActual.scanios, partidoActual.numProceso-1, contNumProcesos);
                         left = left + anchoRectangulo + espacioEntreRectangulos;
                     }
                     else
                     {
-                        // Si no se encuentra un partido para el número de proceso actual, agregar espacio en blanco
-                        Console.WriteLine("Espacio en blanco"); // Puedes ajustar esto según tus necesidades
+                        //Console.WriteLine("Espacio en blanco"); 
                         left = left + anchoRectangulo + espacioEntreRectangulos;
                     }
 
                 }
             }
 
-            //Añadimos la linea que cuenta los partidos
-            //Metemos las lineas de la iquierda del canvas para que podamos ver el numero de escaños que ha sacado cada partido
-            // maxEscanios tiene ek numero maximo y le he añadido  10 para que se vea mejor en la pantalla --> esta guardado en la variable maxAltura
-            //Pondremos cada 20 escaños para que se pueda ver bien los valores
+        
             for (int i = 0; i <= maxAltura; i = i + 20)
             {
 
@@ -188,11 +219,10 @@ namespace Elecciones
 
                     canvasGrafica.Children.Add(linea);
 
-                    // Agregar un TextBlock con el valor de 'i' junto a la línea
                     TextBlock texto = new TextBlock();
                     texto.Text = i.ToString();
-                    Canvas.SetLeft(texto, 7); // Ajusta la posición horizontal según tus necesidades
-                    Canvas.SetTop(texto, canvasGrafica.ActualHeight - valorCanvas - bottom); // Ajusta la posición vertical según tus necesidades
+                    Canvas.SetLeft(texto, 7);
+                    Canvas.SetTop(texto, canvasGrafica.ActualHeight - valorCanvas - bottom); 
                     double factorEscala = 0.8;
                     texto.FontSize = factorEscala * texto.FontSize;
                     canvasGrafica.Children.Add(texto);
@@ -201,15 +231,10 @@ namespace Elecciones
 
         }
 
-        
+       
 
 
-        
-
-
-
-
-        private void agregarRectangulo(double left, double bottom, double width, double height, string colorHex, string etiqueta, int escanios, int numProceso, int contNumProcesos)
+        private void AgregarRectangulo(double left, double bottom, double width, double height, string colorHex, string etiqueta, int escanios, int numProceso, int contNumProcesos)
         {
             Rectangle rectangulo = new System.Windows.Shapes.Rectangle();
 
@@ -217,22 +242,16 @@ namespace Elecciones
             rectangulo.Height = height;
 
             Color clr = (Color)ColorConverter.ConvertFromString(colorHex);
-            //Si el numero de proceso es 1, entonces es el principal, le he restado uno para que asi el segundo proceso sea 1 y para multiplicar por el factor  de conversion sea mas facil
-            //Como es 0 el numero de proceso 1 y no se tiene que cambiar, da igual
+            
             if (numProceso >= 1)
             {
-                double factorDeReduccion = 0.2; // Este factor determina cuánto se reduce la opacidad por cada proceso
+                double factorDeReduccion = 0.2; 
                 double val = 1.0 - (numProceso * factorDeReduccion);
-                
-                int alphaValor = 255 - (int)(val * 120);
-                alphaValor = Math.Max(0, Math.Min(255, alphaValor)); // Limitar entre 0 y 255
 
-                clr = Color.FromArgb((byte)alphaValor, clr.R, clr.G, clr.B);
-                //Creo un nuevo color, este tendra la intensidad reducida dependiendo el numero de proceso que tenga
-                //clr = (Color)Color.FromArgb((byte(255 - (int)(val * 255))), clr.R, clr.G, clr.B);
+                clr = Color.FromArgb((byte)(255 - (80 *val)), clr.R, clr.G, clr.B);
+                
             }
             
-
             SolidColorBrush brocha = new SolidColorBrush(clr);
 
             rectangulo.Fill = brocha;
@@ -247,7 +266,7 @@ namespace Elecciones
         }
 
 
-        private void agregarEtiqueta(string nombrePartido, double anchoRectangulo, double left, double bottom)
+        private void AgregarEtiqueta(string nombrePartido, double anchoRectangulo, double left, double bottom)
         {
             TextBlock etiquetaText = new TextBlock();
             etiquetaText.Text = nombrePartido;
@@ -261,9 +280,5 @@ namespace Elecciones
             canvasGrafica.Children.Add(etiquetaText);
 
         }
-
-
-
-
     }
 }

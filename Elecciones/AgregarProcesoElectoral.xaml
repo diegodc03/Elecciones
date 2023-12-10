@@ -66,28 +66,18 @@
 
 
 
-
-
-
-
-
             </Grid>
         </TabItem>
-        <TabItem Header="Partido Político" Height="22" Margin="-2,-2,-2,0" VerticalAlignment="Top">
+        <TabItem Header="Partido Político" Height="Auto" Width="Auto" Margin="-2,-2,-2,0" VerticalAlignment="Top">
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="27*"/>
-                    <ColumnDefinition Width="24*"/>
-                    <ColumnDefinition Width="346*"/>
-                    <ColumnDefinition Width="397*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
 
-
-
-                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="3">
-
+                <StackPanel Orientation="Vertical" Grid.Column="0" >
 
                     <StackPanel Margin="10,10,10,10" Grid.ColumnSpan="3" >
                         <TextBlock Grid.Row="0" Text="Introduce un Partido Político" Margin="10"/>
